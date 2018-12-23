@@ -1,13 +1,15 @@
 package org.robolectric.shadows;
 
+import static android.os.Build.VERSION_CODES.Q;
+import static android.os.Build.VERSION_CODES.P;
 import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.N_MR1;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
+import static org.robolectric.util.ReflectionHelpers.callInstanceMethod;
 
-import android.app.Application;
 import android.content.Context;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbDevice;
@@ -16,7 +18,10 @@ import android.hardware.usb.UsbPort;
 import android.hardware.usb.UsbPortStatus;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,8 +47,7 @@ public class ShadowUsbManagerTest {
     MockitoAnnotations.initMocks(this);
     usbManager =
         (UsbManager)
-            ((Application) ApplicationProvider.getApplicationContext())
-                .getSystemService(Context.USB_SERVICE);
+            ApplicationProvider.getApplicationContext().getSystemService(Context.USB_SERVICE);
     shadowUsbManager = shadowOf(usbManager);
 
     when(usbDevice1.getDeviceName()).thenReturn(DEVICE_NAME_1);
@@ -103,39 +107,52 @@ public class ShadowUsbManagerTest {
   }
 
   @Test
-  @Config(minSdk = M)
+  @Config(minSdk = M, maxSdk = P)
+  public void getPorts_shouldReturnAddedPortsMtoP() {
+    shadowUsbManager.addPort("port1");
+    shadowUsbManager.addPort("port2");
+    shadowUsbManager.addPort("port3");
+
+    UsbPort[] usbPorts = callInstanceMethod(usbManager, "getPorts");
+    assertThat(usbPorts).hasLength(3);
+    assertThat(Arrays.stream(usbPorts).map(UsbPort::getId).collect(Collectors.toList()))
+            .containsExactly("port1", "port2", "port3");
+  }
+
+  @Test
+  @Config(minSdk = Q)
   public void getPorts_shouldReturnAddedPorts() {
     shadowUsbManager.addPort("port1");
     shadowUsbManager.addPort("port2");
     shadowUsbManager.addPort("port3");
 
-    UsbPort[] usbPorts = usbManager.getPorts();
-    assertThat(usbPorts).hasLength(3);
-    assertThat(Arrays.stream(usbPorts).map(UsbPort::getId).collect(Collectors.toList()))
+    List<UsbPort> usbPorts = usbManager.getPorts();
+    assertThat(usbPorts).hasSize(3);
+    assertThat(usbPorts.stream().map(UsbPort::getId).collect(Collectors.toList()))
         .containsExactly("port1", "port2", "port3");
   }
 
   @Test
-  @Config(minSdk = M)
+  @Config(minSdk = Q)
   public void clearPorts_shouldRemoveAllPorts() {
     shadowUsbManager.addPort("port1");
     shadowUsbManager.clearPorts();
 
-    UsbPort[] usbPorts = usbManager.getPorts();
+    List<UsbPort> usbPorts = usbManager.getPorts();
     assertThat(usbPorts).isEmpty();
   }
 
   @Test
-  @Config(minSdk = M)
+  @Config(minSdk = Q)
   public void setPortRoles_sinkHost_shouldSetPortStatus() {
     shadowUsbManager.addPort("port1");
 
-    UsbPort[] usbPorts = usbManager.getPorts();
-    usbManager.setPortRoles(usbPorts[0], UsbPort.POWER_ROLE_SINK, UsbPort.DATA_ROLE_HOST);
+    List<UsbPort> usbPorts = usbManager.getPorts();
+    usbPorts.get(0).setRoles(UsbPortStatus.POWER_ROLE_SINK, UsbPortStatus.DATA_ROLE_HOST);
 
-    UsbPortStatus usbPortStatus = usbManager.getPortStatus(usbPorts[0]);
-    assertThat(usbPortStatus.getCurrentPowerRole()).isEqualTo(UsbPort.POWER_ROLE_SINK);
-    assertThat(usbPortStatus.getCurrentDataRole()).isEqualTo(UsbPort.DATA_ROLE_HOST);
+    UsbPortStatus usbPortStatus = usbPorts.get(0).getStatus();
+    assertThat(usbPortStatus.getCurrentPowerRole()).isEqualTo(UsbPortStatus.POWER_ROLE_SINK);
+    assertThat(usbPortStatus.getCurrentDataRole()).isEqualTo(UsbPortStatus.DATA_ROLE_HOST);
   }
 
   @Test
