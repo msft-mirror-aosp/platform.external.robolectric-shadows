@@ -1020,8 +1020,8 @@ public class ShadowApplicationPackageManager extends ShadowPackageManager {
   }
 
   @Implementation
-  protected Drawable getApplicationIcon(ApplicationInfo info) {
-    return null;
+  protected Drawable getApplicationIcon(ApplicationInfo info) throws NameNotFoundException {
+    return getApplicationIcon(info.packageName);
   }
 
   @Implementation(minSdk = LOLLIPOP)
@@ -1219,6 +1219,13 @@ public class ShadowApplicationPackageManager extends ShadowPackageManager {
     throw new NameNotFoundException(packageName);
   }
 
+  @Implementation
+  protected ApplicationInfo getApplicationInfoAsUser(
+          String packageName, int flags, UserHandle userId) throws NameNotFoundException {
+    // Currently does not use the user ID.
+    return getApplicationInfo(packageName, flags);
+  }
+
   /**
    * Returns all the values added via {@link
    * ShadowPackageManager#addSystemSharedLibraryName(String)}.
@@ -1341,7 +1348,11 @@ public class ShadowApplicationPackageManager extends ShadowPackageManager {
 
   @Implementation(minSdk = N)
   protected List<PackageInfo> getInstalledPackagesAsUser(int flags, int userId) {
-    return null;
+    List<PackageInfo> packages = new ArrayList<>();
+    for (String packageName : packagesForUserId.getOrDefault(userId, new ArrayList<>())) {
+      packages.add(packageInfos.get(packageName));
+    }
+    return packages;
   }
 
   @Implementation(minSdk = JELLY_BEAN_MR2)

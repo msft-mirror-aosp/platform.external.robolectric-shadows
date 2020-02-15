@@ -10,6 +10,7 @@ import static android.os.Build.VERSION_CODES.R;
 import static org.robolectric.shadow.api.Shadow.directlyOn;
 
 import android.Manifest.permission;
+import android.annotation.UserIdInt;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.UserInfo;
@@ -61,6 +62,7 @@ public class ShadowUserManager {
   private Map<Integer, UserState> userState = new HashMap<>();
   private Map<Integer, UserInfo> userInfoMap = new HashMap<>();
   private Map<Integer, List<UserInfo>> profiles = new HashMap<>();
+  private Map<Integer, Integer> profileToParent = new HashMap<>();
 
   private Context context;
   private boolean enforcePermissions;
@@ -119,6 +121,12 @@ public class ShadowUserManager {
     if (profiles.containsKey(userHandle)) {
       return ImmutableList.copyOf(profiles.get(userHandle));
     }
+
+    if (profileToParent.containsKey(userHandle)
+            && profiles.containsKey(profileToParent.get(userHandle))) {
+      return ImmutableList.copyOf(profiles.get(profileToParent.get(userHandle)));
+    }
+
     return directlyOn(
             realObject, UserManager.class, "getProfiles", ClassParameter.from(int.class, userHandle));
   }
@@ -128,6 +136,18 @@ public class ShadowUserManager {
           int userHandle, int profileUserHandle, String profileName, int profileFlags) {
     profiles.putIfAbsent(userHandle, new ArrayList<>());
     profiles.get(userHandle).add(new UserInfo(profileUserHandle, profileName, profileFlags));
+    profileToParent.put(profileUserHandle, userHandle);
+  }
+
+  /**
+   * If this profile has been added using {@link #addProfile}, return its parent.
+   */
+  @Implementation(minSdk = LOLLIPOP)
+  protected UserInfo getProfileParent(int userHandle) {
+    if (!profileToParent.containsKey(userHandle)) {
+      return null;
+    }
+    return userInfoMap.get(profileToParent.get(userHandle));
   }
 
   @Implementation(minSdk = N)
@@ -155,8 +175,8 @@ public class ShadowUserManager {
   protected boolean isManagedProfile() {
     if (enforcePermissions && !hasManageUsersPermission()) {
       throw new SecurityException(
-          "You need MANAGE_USERS permission to: check if specified user a " +
-              "managed profile outside your profile group");
+              "You need MANAGE_USERS permission to: check if specified user a " +
+                      "managed profile outside your profile group");
     }
     return managedProfile;
   }
@@ -256,6 +276,16 @@ public class ShadowUserManager {
   @Implementation
   protected UserHandle getUserForSerialNumber(long serialNumber) {
     return userProfiles.inverse().get(serialNumber);
+  }
+
+  /**
+   * @see #addProfile(int, int, String, int)
+   * @see #addUser(int, String, int)
+   */
+  @Implementation
+  protected int getUserSerialNumber(@UserIdInt int userHandle) {
+    Long result = userProfiles.get(UserHandle.of(userHandle));
+    return result != null ? result.intValue() : -1;
   }
 
   private boolean hasManageUsersPermission() {
@@ -407,8 +437,8 @@ public class ShadowUserManager {
     UserState state = userState.get(handle.getIdentifier());
 
     if (state == UserState.STATE_RUNNING_LOCKED
-        || state == UserState.STATE_RUNNING_UNLOCKED
-        || state == UserState.STATE_RUNNING_UNLOCKING) {
+            || state == UserState.STATE_RUNNING_UNLOCKED
+            || state == UserState.STATE_RUNNING_UNLOCKING) {
       return true;
     } else {
       return false;
@@ -424,9 +454,9 @@ public class ShadowUserManager {
     UserState state = userState.get(handle.getIdentifier());
 
     if (state == UserState.STATE_RUNNING_LOCKED
-        || state == UserState.STATE_RUNNING_UNLOCKED
-        || state == UserState.STATE_RUNNING_UNLOCKING
-        || state == UserState.STATE_STOPPING) {
+            || state == UserState.STATE_RUNNING_UNLOCKED
+            || state == UserState.STATE_RUNNING_UNLOCKING
+            || state == UserState.STATE_STOPPING) {
       return true;
     } else {
       return false;
@@ -514,15 +544,16 @@ public class ShadowUserManager {
    */
   public void addUser(int id, String name, int flags) {
     UserHandle userHandle =
-        id == UserHandle.USER_SYSTEM ? Process.myUserHandle() : new UserHandle(id);
+            id == UserHandle.USER_SYSTEM ? Process.myUserHandle() : new UserHandle(id);
     addUserProfile(userHandle);
     setSerialNumberForUser(userHandle, (long) id);
+    profiles.putIfAbsent(id, new ArrayList<>());
     userInfoMap.put(id, new UserInfo(id, name, flags));
     userPidMap.put(
-        id,
-        id == UserHandle.USER_SYSTEM
-            ? Process.myUid()
-            : id * UserHandle.PER_USER_RANGE + ShadowProcess.getRandomApplicationUid());
+            id,
+            id == UserHandle.USER_SYSTEM
+                    ? Process.myUid()
+                    : id * UserHandle.PER_USER_RANGE + ShadowProcess.getRandomApplicationUid());
   }
 
   @Resetter
