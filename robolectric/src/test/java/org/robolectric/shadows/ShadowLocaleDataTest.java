@@ -69,6 +69,14 @@ public class ShadowLocaleDataTest {
 
   @Test
   @Config(maxSdk = Build.VERSION_CODES.Q)
+  public void shouldSupportLocaleEn_US_yesterday() throws Exception {
+    LocaleData localeData = LocaleData.get(Locale.US);
+      String currencySymbolValue = ReflectionHelpers.getField(localeData, "yesterday");
+      assertThat(currencySymbolValue).isEqualTo("Yesterday");
+  }
+
+  @Test
+  @Config(maxSdk = Build.VERSION_CODES.Q)
   public void shouldSupportLocaleEn_US_currencySymbol() throws Exception {
     LocaleData localeData = LocaleData.get(Locale.US);
     String currencySymbolValue = ReflectionHelpers.getField(localeData, "currencySymbol");
@@ -115,7 +123,6 @@ public class ShadowLocaleDataTest {
     assertThat(localeData.tinyWeekdayNames).isEqualTo(new String[]{"", "S", "M", "T", "W", "T", "F", "S"});
     assertThat(localeData.tinyStandAloneWeekdayNames).isEqualTo(localeData.tinyWeekdayNames);
 
-    assertThat(localeData.yesterday).isEqualTo("Yesterday");
     assertThat(localeData.today).isEqualTo("Today");
     assertThat(localeData.tomorrow).isEqualTo("Tomorrow");
   }
