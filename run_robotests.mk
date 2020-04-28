@@ -37,7 +37,7 @@
 ### Used for running tests.
 ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
     # Where to find Robolectric.
-    my_robolectric_script_path := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
+    my_robolectric_script_path := $(call my-dir)
 
     my_collect_target := $(LOCAL_MODULE)-coverage
     my_report_target := $(LOCAL_MODULE)-jacoco
@@ -58,8 +58,6 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
     my_instrument_source_dirs := $(if $(LOCAL_INSTRUMENT_SOURCE_DIRS),\
         $(LOCAL_INSTRUMENT_SOURCE_DIRS),\
         $(my_instrument_makefile_dir)src $(my_instrument_makefile_dir)java)
-
-    my_instrument_srcjars := $(LOCAL_INSTRUMENT_SRCJARS)
 
     ##########################
     # Used by base_rules.mk. #
@@ -114,7 +112,7 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
     my_filename_stem := test
 
     # Define rules that copy android-all jars to the intermediates folder.
-    local_android_all_source_jar := $(call intermediates-dir-for, JAVA_LIBRARIES, robolectric_android-all-stub,,COMMON)/classes.jar
+    local_android_all_source_jar := $(call intermediates-dir-for, JAVA_LIBRARIES, robolectric_android-all-stub,,COMMON)/classes-with-res.jar
     android_all_lib_path := prebuilts/misc/common/robolectric/android-all
     my_robolectric_path := $(intermediates.COMMON)/android-all
     copy_android_all_jar_pairs := \
@@ -212,8 +210,4 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
     my_srcs_jars :=
     my_target :=
     my_collect_file :=
-
-    my_instrument_makefile_dir :=
-    my_instrument_source_dirs :=
-    my_instrument_srcjars :=
 endif
