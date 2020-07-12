@@ -19,7 +19,7 @@ package org.robolectric.shadows;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static android.os.Build.VERSION_CODES.R;
+import static android.os.Build.VERSION_CODES.S;
 import static com.google.common.truth.Truth.assertThat;
 
 import android.icu.util.TimeZone;
@@ -37,7 +37,7 @@ import org.robolectric.util.ReflectionHelpers.ClassParameter;
 public class ShadowTimeZoneFinderSTest {
 
   @Test
-  @Config(minSdk = R, maxSdk = R) // both should be S, but it doesn't exist in AOSP
+  @Config(minSdk = S)
   public void lookupTimeZonesByCountry_shouldReturnExpectedTimeZones() throws Exception {
     Class<?> cls = Class.forName("com.android.i18n.timezone.TimeZoneFinder");
     Object timeZoneFinder = ReflectionHelpers.callStaticMethod(cls, "getInstance");

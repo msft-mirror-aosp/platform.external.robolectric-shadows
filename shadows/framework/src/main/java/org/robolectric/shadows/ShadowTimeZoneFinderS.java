@@ -17,7 +17,7 @@
 // BEGIN-INTERNAL
 package org.robolectric.shadows;
 
-import static android.os.Build.VERSION_CODES.R;
+import static android.os.Build.VERSION_CODES.S;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.BufferedReader;
@@ -31,7 +31,7 @@ import org.robolectric.annotation.Implements;
 /** Shadow for TimeZoneFinder on S or above. */
 @Implements(
     value = TimeZoneFinder.class,
-    minSdk = R, // maxSdk should be R, but it can't compile until AOSP provides S version.
+    minSdk = S,
     isInAndroidSdk = false,
     looseSignatures = true)
 public class ShadowTimeZoneFinderS {
