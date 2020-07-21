@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+package {
+    default_visibility: [":__subpackages__"],
+}
+
 java_library {
     name: "robolectric_android-all-stub",
 
@@ -46,7 +50,8 @@ java_library {
             "win_sdk",
         ],
         dest: "android-all-robolectric.jar",
-    }
+    },
+    visibility: ["//visibility:public"],
 }
 
 // build.prop file created by module type defined in soong/robolectric.go
@@ -137,6 +142,7 @@ java_library_host {
 java_host_for_device {
     name: "Robolectric_all-target",
     libs: ["Robolectric_all"],
+    visibility: ["//visibility:public"],
 }
 
 // Make dependencies available as host jars
