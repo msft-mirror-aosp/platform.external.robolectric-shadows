@@ -102,6 +102,10 @@ java_library_host {
         // Copy the build.prop
         ":robolectric_build_props",
     ],
+    visibility: [
+        ":__subpackages__",
+        "//prebuilts/misc/common/robolectric",
+    ],
 }
 
 //#############################################
