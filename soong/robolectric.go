@@ -58,7 +58,7 @@ func (b *buildProps) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 		"ro.product.model=robolectric",
 		"ro.hardware=robolectric",
 		"ro.build.version.security_patch=" + ctx.Config().PlatformSecurityPatch(),
-		"ro.build.version.sdk=" + ctx.Config().PlatformSdkVersion(),
+		"ro.build.version.sdk=" + ctx.Config().PlatformSdkVersion().String(),
 		"ro.build.version.release=" + ctx.Config().PlatformVersionName(),
 		"ro.build.version.preview_sdk=" + ctx.Config().PlatformPreviewSdkVersion(),
 		// We don't have the API fingerprint available, just use the preview SDK version.
