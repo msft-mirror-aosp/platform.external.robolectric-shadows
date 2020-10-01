@@ -58,7 +58,7 @@ func (b *buildProps) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 		"ro.product.model=robolectric",
 		"ro.hardware=robolectric",
 		"ro.build.version.security_patch=" + ctx.Config().PlatformSecurityPatch(),
-		"ro.build.version.sdk=" + ctx.Config().PlatformSdkVersion(),
+		"ro.build.version.sdk=" + ctx.Config().PlatformSdkVersion().String(),
 		"ro.build.version.release=" + ctx.Config().PlatformVersionName(),
 		"ro.build.version.preview_sdk=" + ctx.Config().PlatformPreviewSdkVersion(),
 		// We don't have the API fingerprint available, just use the preview SDK version.
@@ -77,6 +77,9 @@ func (b *buildProps) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 		"ro.product.cpu.abilist=armeabi-v7a",
 		"ro.product.cpu.abilist32=armeabi-v7a,armeabi",
 		"ro.product.cpu.abilist64=armeabi-v7a,armeabi",
+		"",
+		"# temp fix for robolectric freezing issue b/150011638",
+		"persist.debug.new_insets=0",
 	}
 
 	b.output = android.PathForModuleGen(ctx, "build.prop")
