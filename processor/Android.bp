@@ -42,7 +42,7 @@ java_test_host {
         "Robolectric_processor",
         "Robolectric_shadowapi",
         "robolectric-javax.annotation-api-1.2",
-        "robolectric-compile-testing-0.15",
+        "robolectric-compile-testing-0.19",
         "mockito",
         "hamcrest",
         "guava",
