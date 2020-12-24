@@ -10,6 +10,7 @@ import static android.os.Build.VERSION_CODES.O;
 import static android.os.Build.VERSION_CODES.P;
 import static android.os.Build.VERSION_CODES.Q;
 import static android.os.Build.VERSION_CODES.R;
+import static android.os.Build.VERSION_CODES.S;
 
 import android.accounts.IAccountManager;
 import android.app.IAlarmManager;
@@ -51,6 +52,7 @@ import android.os.IUserManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.storage.IStorageManager;
+import android.permission.IPermissionManager;
 import android.service.persistentdata.IPersistentDataBlockService;
 
 import com.android.internal.app.IAppOpsService;
@@ -210,6 +212,10 @@ public class ShadowServiceManager {
               createBinder(ITetheringConnector.class, "android.net.ITetheringConnector"));
       map.put(Context.THERMAL_SERVICE,
               createBinder(IThermalService.class, "android.os.IThermalService"));
+    }
+    if (RuntimeEnvironment.getApiLevel() >= S) {
+      map.put("permissionmgr",
+              createBinder(IPermissionManager.class, "android.permission.IPermissionManager"));
     }
     // END-INTERNAL
     SERVICES = Collections.unmodifiableMap(map);
