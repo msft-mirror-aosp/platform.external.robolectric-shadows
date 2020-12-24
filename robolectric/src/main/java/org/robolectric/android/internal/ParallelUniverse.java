@@ -147,8 +147,17 @@ public class ParallelUniverse implements ParallelUniverseInterface {
       RuntimeEnvironment.setAndroidFrameworkJarPath(
           apkLoader.getArtifactUrl(sdkConfig.getAndroidSdkDependency()).getFile());
 
+      // PackageParser.parseBaseApkCommon() relies on an initial Application object in order to
+      // resolve PermissionManager service.
+      createInitialApplication(appManifest, config);
+
       FsFile packageFile = appManifest.getApkFile();
       parsedPackage = ShadowPackageParser.callParsePackage(packageFile);
+
+      // Create a new ActivityThread for RuntimeEnvironment since the original one is bound to a
+      // system context stub in createInitialApplication(), which causes Resources not found.
+      activityThread = ReflectionHelpers.newInstance(ActivityThread.class);
+      RuntimeEnvironment.setActivityThread(activityThread);
     }
 
     ApplicationInfo applicationInfo = parsedPackage.applicationInfo;
@@ -245,6 +254,41 @@ public class ParallelUniverse implements ParallelUniverseInterface {
       PerfStatsCollector.getInstance()
           .measure("application onCreate()", () -> application.onCreate());
     }
+  }
+
+  private void createInitialApplication(AndroidManifest appManifest, Config config) {
+    ShadowActivityThread.setApplicationInfo(createApplicationInfo(appManifest));
+    ActivityThread activityThread = ActivityThread.currentActivityThread();
+
+    Class<?> contextImplClass =
+        ReflectionHelpers.loadClass(
+            getClass().getClassLoader(), ShadowContextImpl.CLASS_NAME);
+    Context systemContextImpl = ReflectionHelpers.callStaticMethod(contextImplClass,
+        "createSystemContext", from(ActivityThread.class, activityThread));
+
+    Application application = createApplication(appManifest, config);
+
+    if (application != null) {
+      try {
+        Context contextImpl = systemContextImpl
+            .createPackageContext(appManifest.getPackageName(), Context.CONTEXT_INCLUDE_CODE);
+
+        ReflectionHelpers
+            .setField(ActivityThread.class, activityThread, "mInitialApplication", application);
+        ShadowApplication shadowApplication = Shadow.extract(application);
+        shadowApplication.callAttach(contextImpl);
+      } catch (PackageManager.NameNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private ApplicationInfo createApplicationInfo(AndroidManifest appManifest) {
+    final ApplicationInfo info = new ApplicationInfo();
+    info.targetSdkVersion = appManifest.getTargetSdkVersion();
+    info.packageName = appManifest.getPackageName();
+    info.processName = appManifest.getProcessName();
+    return info;
   }
 
   private void injectResourceStuffForLegacy(ApkLoader apkLoader, AndroidManifest appManifest,
