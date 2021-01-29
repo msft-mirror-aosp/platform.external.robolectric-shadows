@@ -84,14 +84,14 @@ func (b *buildProps) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 
 	b.output = android.PathForModuleGen(ctx, "build.prop")
 
-	rule := android.NewRuleBuilder()
+	rule := android.NewRuleBuilder(pctx, ctx)
 
 	rule.Command().Text("rm").Flag("-f").Output(b.output)
 	for _, l := range lines {
 		rule.Command().Text("echo").Text("'" + l + "'").Text(">>").Output(b.output)
 	}
 
-	rule.Build(pctx, ctx, "build_prop", "robolectric build.prop")
+	rule.Build("build_prop", "robolectric build.prop")
 }
 
 func buildPropsFactory() android.Module {
