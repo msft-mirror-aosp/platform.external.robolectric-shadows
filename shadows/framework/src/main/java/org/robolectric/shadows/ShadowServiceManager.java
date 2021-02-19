@@ -38,6 +38,7 @@ import android.media.session.ISessionManager;
 import android.net.IConnectivityManager;
 import android.net.INetworkScoreService;
 import android.net.ITetheringConnector;
+import android.net.IVpnManager;
 import android.net.nsd.INsdManager;
 import android.net.wifi.IWifiManager;
 import android.net.wifi.p2p.IWifiP2pManager;
@@ -216,6 +217,8 @@ public class ShadowServiceManager {
     if (RuntimeEnvironment.getApiLevel() >= S) {
       map.put("permissionmgr",
               createBinder(IPermissionManager.class, "android.permission.IPermissionManager"));
+      map.put(Context.VPN_MANAGEMENT_SERVICE,
+              createBinder(IVpnManager.class, "android.net.IVpnManager"));
     }
     // END-INTERNAL
     SERVICES = Collections.unmodifiableMap(map);
