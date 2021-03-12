@@ -182,7 +182,23 @@ public class ParallelUniverse implements ParallelUniverseInterface {
         ReflectionHelpers.loadClass(
             getClass().getClassLoader(), ShadowContextImpl.CLASS_NAME);
 
-    ReflectionHelpers.setField(activityThread, "mCompatConfiguration", configuration);
+    if (sdkConfig.getApiLevel() < Build.VERSION_CODES.S) {
+      ReflectionHelpers.setField(activityThread, "mCompatConfiguration", configuration);
+    } else {
+      Class<?> activityThreadInternalClass =
+              ReflectionHelpers.loadClass(
+                      getClass().getClassLoader(), "android.app.ActivityThreadInternal");
+      Class<?> configurationControllerClass =
+              ReflectionHelpers.loadClass(
+                      getClass().getClassLoader(), "android.app.ConfigurationController");
+      Object configController = ReflectionHelpers.callConstructor(configurationControllerClass,
+              from(activityThreadInternalClass, activityThread));
+      ReflectionHelpers.callInstanceMethod(configController, "setCompatConfiguration",
+              from(Configuration.class, configuration));
+      configuration = ReflectionHelpers.callInstanceMethod(configController,
+              "getCompatConfiguration");
+      ReflectionHelpers.setField(activityThread, "mConfigurationController", configController);
+    }
     ReflectionHelpers
         .setStaticField(ActivityThread.class, "sMainThreadHandler", new Handler(Looper.myLooper()));
 
@@ -230,7 +246,7 @@ public class ParallelUniverse implements ParallelUniverseInterface {
         ReflectionHelpers.callInstanceMethod(
             contextImpl,
             "setOuterContext",
-            ReflectionHelpers.ClassParameter.from(Context.class, application));
+            from(Context.class, application));
       } catch (PackageManager.NameNotFoundException e) {
         throw new RuntimeException(e);
       }
