@@ -92,7 +92,7 @@ java_device_for_host {
     name: "robolectric_android-all-device-deps",
     libs: [
         "conscrypt-for-host",
-        "core-icu4j",
+        "core-icu4j-for-host",
         "core-libart-for-host",
         "ext",
         "framework-all",
