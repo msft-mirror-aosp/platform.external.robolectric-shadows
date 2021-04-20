@@ -93,7 +93,7 @@ java_device_for_host {
     libs: [
         "conscrypt",
         "core-icu4j",
-        "core-libart",
+        "core-libart-for-host",
         "ext",
         "framework-all",
         "icu4j-icudata-jarjar",
@@ -101,7 +101,7 @@ java_device_for_host {
         "ims-common",
         "android.test.base_static",
         "libphonenumber-platform",
-        "okhttp",
+        "okhttp-for-host",
         "services",
         "services.accessibility",
         "telephony-common",
