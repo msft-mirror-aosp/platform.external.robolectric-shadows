@@ -91,8 +91,8 @@ java_genrule_host {
 java_device_for_host {
     name: "robolectric_android-all-device-deps",
     libs: [
-        "conscrypt",
-        "core-icu4j",
+        "conscrypt-for-host",
+        "core-icu4j-for-host",
         "core-libart-for-host",
         "ext",
         "framework-all",
