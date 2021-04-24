@@ -22,6 +22,9 @@ LOCAL_USE_AAPT2 := true
 
 LOCAL_PROGUARD_ENABLED := disabled
 
+LOCAL_LICENSE_KINDS := SPDX-license-identifier-MIT
+LOCAL_LICENSE_CONDITIONS := notice
+LOCAL_NOTICE_FILE := $(LOCAL_PATH)/../../../LICENSE
 include $(BUILD_PACKAGE)
 
 ################################################################
