@@ -88,8 +88,9 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
     # directory from which this module is invoked.
     ifeq ($(strip $(LOCAL_ROBOTEST_FILES)),)
         LOCAL_ROBOTEST_FILES := $(call find-files-in-subdirs,$(LOCAL_PATH)/src,*Test.java,.)
+        LOCAL_ROBOTEST_FILES += $(call find-files-in-subdirs,$(LOCAL_PATH)/src,*Test.kt,.)
     endif
-    # Convert the paths into package names by removing .java extension and replacing "/" with "."
+    # Convert the paths into package names by removing .java or *.kt extensions and replacing "/" with "."
     my_tests := $(sort $(subst /,.,$(basename $(LOCAL_ROBOTEST_FILES))))
     ifdef my_test_filter_command
         my_tests := $(sort $(shell echo '$(my_tests)' | tr ' ' '\n' | $(my_test_filter_command)))
