@@ -31,7 +31,7 @@ public class SdkConfig implements Comparable<SdkConfig> {
               addSdk(Build.VERSION_CODES.P, "9", "4913185-2", "REL");
               addSdk(Build.VERSION_CODES.Q, "10", "5803371", "REL");
               // BEGIN-INTERNAL
-              addSdk(Build.VERSION_CODES.R, "R", "r0", "R");
+              addSdk(Build.VERSION_CODES.CUR_DEVELOPMENT, "current", "r0", "ZZZ");
               // END-INTERNAL
             }
 
