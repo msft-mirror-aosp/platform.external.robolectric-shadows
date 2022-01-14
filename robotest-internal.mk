@@ -18,8 +18,8 @@ my_target_retval := $(intermediates)/$(my_filename_stem)-retval.txt
 my_target_nocache := $(intermediates)/$(my_filename_stem)-nocache
 
 # OpenJDK 10+ java binaries include v54+ classfiles which require ASM 7.0 or higher.
-# While this build is still using ASM 6.0, pin to an OpenJDK 9 java binary:
-my_require_v53_or_lower_class_files := true
+# The flag has been used when this build was using ASM 6.0 to pin to an OpenJDK 9 java binary:
+my_require_v53_or_lower_class_files := false
 
 # Private variables.
 $(my_target_output): PRIVATE_MODULE := $(LOCAL_MODULE)
