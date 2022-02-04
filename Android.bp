@@ -154,7 +154,7 @@ java_library_host {
         "Robolectric_sandbox",
         "Robolectric_junit",
         "Robolectric_utils",
-        "asm-7.0", // when upgraded to ASM 7.0+, my_require_v53_or_lower_class_files was unset in robotest-internal.mk (requires robolectric 4.0.x, see b/135459087)
+        "asm-7.0",
         "junit",
         "asm-tree-7.0",
         "guava",
