@@ -9,10 +9,6 @@ import android.content.Context;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.ref.PhantomReference;
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -36,7 +32,6 @@ public class AndroidInterceptors {
         new SystemArrayCopyInterceptor(),
         new LocaleAdjustLanguageCodeInterceptor(),
         new SystemLogInterceptor(),
-        new ReferenceRefersToInterceptor(),
         new NoOpInterceptor()
     );
   }
@@ -240,34 +235,6 @@ public class AndroidInterceptors {
     @Override
     public MethodHandle getMethodHandle(String methodName, MethodType type) throws NoSuchMethodException, IllegalAccessException {
       return lookup.findStatic(getClass(), methodName, methodType(void.class, Object[].class));
-    }
-  }
-
-  /** AndroidInterceptor for Reference.refersTo. */
-  public static class ReferenceRefersToInterceptor extends Interceptor {
-    private static final String METHOD = "refersTo";
-
-    public ReferenceRefersToInterceptor() {
-      super(
-          new MethodRef(WeakReference.class.getName(), METHOD),
-          new MethodRef(SoftReference.class.getName(), METHOD),
-          new MethodRef(PhantomReference.class.getName(), METHOD));
-    }
-
-    static boolean refersTo(Reference ref, Object obj) {
-      return ref.get() == obj;
-    }
-
-    @Override
-    public Function<Object, Object> handle(MethodSignature methodSignature) {
-      return (theClass, value, params) -> refersTo((Reference) value, params[0]);
-    }
-
-    @Override
-    public MethodHandle getMethodHandle(String methodName, MethodType type)
-            throws NoSuchMethodException, IllegalAccessException {
-      return lookup.findStatic(getClass(), METHOD,
-              methodType(boolean.class, Reference.class, Object.class));
     }
   }
 
