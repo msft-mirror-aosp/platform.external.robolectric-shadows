@@ -104,6 +104,9 @@ public class AndroidConfigurer {
     // This results in an error where two __robo_data__ fields get added to the same object.
     builder.doNotInstrumentPackage("androidx.room.migration");
     builder.doNotInstrumentPackage("androidx.test");
+    // Robolectric instrumentation causes issues with the
+    // androidx.lifecycle.viewmodel.MutableCreationExtras constructor.
+    builder.doNotInstrumentPackage("androidx.lifecycle.viewmodel");
     builder.doNotInstrumentPackage("android.arch.persistence.room.migration");
     builder.doNotInstrumentPackage("android.support.test");
 
