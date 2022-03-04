@@ -27,6 +27,10 @@ java_library_host {
     plugins: ["Robolectric_processor"],
     javacflags: ["-Aorg.robolectric.annotation.processing.shadowPackage=org.robolectric.shadows.httpclient"],
     srcs: ["src/main/java/**/*.java"],
+
+    errorprone: {
+        javacflags: ["-Xep:EqualsNull:WARN"],
+    },
 }
 
 //#############################################
