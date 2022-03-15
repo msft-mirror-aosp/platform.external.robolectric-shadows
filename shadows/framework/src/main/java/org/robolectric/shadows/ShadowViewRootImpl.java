@@ -150,7 +150,7 @@ public class ShadowViewRootImpl {
               ClassParameter.from(android.view.DisplayCutout.ParcelableWrapper.class,
                       new android.view.DisplayCutout.ParcelableWrapper()));
       // END-INTERNAL
-    } else if (apiLevel >= Build.VERSION_CODES.S) {
+    } else if (apiLevel <= Build.VERSION_CODES.S_V2) {
       // BEGIN-INTERNAL
       ReflectionHelpers.callInstanceMethod(ViewRootImpl.class, component, "dispatchResized",
               ClassParameter.from(ClientWindowFrames.class, clientWindowFrame),
@@ -158,6 +158,17 @@ public class ShadowViewRootImpl {
               ClassParameter.from(MergedConfiguration.class, new MergedConfiguration()),
               ClassParameter.from(boolean.class, false),
               ClassParameter.from(boolean.class, false),
+              ClassParameter.from(int.class, 0));
+      // END-INTERNAL
+    } else if (apiLevel >= Build.VERSION_CODES.TIRAMISU) {
+      // BEGIN-INTERNAL
+      ReflectionHelpers.callInstanceMethod(ViewRootImpl.class, component, "dispatchResized",
+              ClassParameter.from(ClientWindowFrames.class, clientWindowFrame),
+              ClassParameter.from(boolean.class, true),
+              ClassParameter.from(MergedConfiguration.class, new MergedConfiguration()),
+              ClassParameter.from(boolean.class, false),
+              ClassParameter.from(boolean.class, false),
+              ClassParameter.from(int.class, 0),
               ClassParameter.from(int.class, 0));
       // END-INTERNAL
     } else {
