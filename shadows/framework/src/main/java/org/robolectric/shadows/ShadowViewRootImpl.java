@@ -169,6 +169,7 @@ public class ShadowViewRootImpl {
               ClassParameter.from(boolean.class, false),
               ClassParameter.from(boolean.class, false),
               ClassParameter.from(int.class, 0),
+              ClassParameter.from(int.class, 0),
               ClassParameter.from(int.class, 0));
       // END-INTERNAL
     } else {
