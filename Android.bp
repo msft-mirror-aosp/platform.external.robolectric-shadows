@@ -99,12 +99,13 @@ java_device_for_host {
         "icu4j-icudata-jarjar",
         "icu4j-icutzdata-jarjar",
         "ims-common",
+        "android.test.base_static",
         "libphonenumber-platform",
         "okhttp-for-host",
         "services",
         "services.accessibility",
         "telephony-common",
-        "android.car",
+
     ],
 }
 
@@ -154,11 +155,11 @@ java_library_host {
         "Robolectric_sandbox",
         "Robolectric_junit",
         "Robolectric_utils",
-        "asm-9.2",
+        "asm-6.0", // if upgrading to ASM 7.0+, unset my_require_v53_or_lower_class_files in robotest-internal.mk (requires robolectric 4.0.x, see b/135459087)
         "junit",
-        "asm-tree-9.2",
+        "asm-tree-6.0",
         "guava",
-        "asm-commons-9.2",
+        "asm-commons-6.0",
         "bouncycastle-unbundled",
         "robolectric-sqlite4java-0.282",
         "hamcrest",
