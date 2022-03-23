@@ -2,7 +2,6 @@ package org.robolectric.shadows;
 
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static android.os.Build.VERSION_CODES.TIRAMISU;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
@@ -10,7 +9,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.bluetooth.BluetoothStatusCodes;
 import android.os.ParcelUuid;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,10 +18,9 @@ import java.util.Set;
 import java.util.UUID;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
-import org.robolectric.RuntimeEnvironment;
 
 @SuppressWarnings({"UnusedDeclaration"})
-@Implements(value = BluetoothAdapter.class, looseSignatures = true)
+@Implements(BluetoothAdapter.class)
 public class ShadowBluetoothAdapter {
   private static final int ADDRESS_LENGTH = 17;
 
@@ -143,16 +140,15 @@ public class ShadowBluetoothAdapter {
   }
 
   @Implementation
-  protected Object setScanMode(int scanMode) {
+  protected boolean setScanMode(int scanMode) {
     if (scanMode != BluetoothAdapter.SCAN_MODE_CONNECTABLE
         && scanMode != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
         && scanMode != BluetoothAdapter.SCAN_MODE_NONE) {
-        return (RuntimeEnvironment.getApiLevel() >= TIRAMISU) ?
-                BluetoothStatusCodes.ERROR_UNKNOWN : false;
+      return false;
     }
+
     this.scanMode = scanMode;
-    return (RuntimeEnvironment.getApiLevel() >= TIRAMISU) ?
-            BluetoothStatusCodes.SUCCESS : true;
+    return true;
   }
 
   @Implementation
