@@ -11,10 +11,11 @@ import android.os.Looper;
 import android.util.MergedConfiguration;
 import android.view.Display;
 import android.view.IWindowSession;
+import android.view.InsetsState;
 import android.view.ViewRootImpl;
 import android.view.WindowManager;
 import android.window.ClientWindowFrames;
-import java.util.ArrayList;
+
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
@@ -22,6 +23,8 @@ import org.robolectric.annotation.RealObject;
 import org.robolectric.annotation.Resetter;
 import org.robolectric.util.ReflectionHelpers;
 import org.robolectric.util.ReflectionHelpers.ClassParameter;
+
+import java.util.ArrayList;
 
 @Implements(value = ViewRootImpl.class, isInAndroidSdk = false)
 public class ShadowViewRootImpl {
@@ -166,8 +169,10 @@ public class ShadowViewRootImpl {
               ClassParameter.from(ClientWindowFrames.class, clientWindowFrame),
               ClassParameter.from(boolean.class, true),
               ClassParameter.from(MergedConfiguration.class, new MergedConfiguration()),
+              ClassParameter.from(InsetsState.class, new InsetsState()),
               ClassParameter.from(boolean.class, false),
               ClassParameter.from(boolean.class, false),
+              ClassParameter.from(int.class, 0),
               ClassParameter.from(int.class, 0),
               ClassParameter.from(int.class, 0));
       // END-INTERNAL
