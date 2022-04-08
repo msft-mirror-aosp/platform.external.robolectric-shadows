@@ -1,7 +1,6 @@
 package org.robolectric.util;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
 import static org.robolectric.util.Scheduler.IdleState.CONSTANT_IDLE;
 import static org.robolectric.util.Scheduler.IdleState.PAUSED;
 import static org.robolectric.util.Scheduler.IdleState.UNPAUSED;
@@ -54,7 +53,7 @@ public class SchedulerTest {
   public void pause_setsIdleState() {
     scheduler.setIdleState(UNPAUSED);
     scheduler.pause();
-    assertThat(scheduler.getIdleState()).isSameInstanceAs(PAUSED);
+    assertThat(scheduler.getIdleState()).isSameAs(PAUSED);
   }
 
   @Test
@@ -62,16 +61,16 @@ public class SchedulerTest {
   public void idleConstantly_setsIdleState() {
     scheduler.setIdleState(UNPAUSED);
     scheduler.idleConstantly(true);
-    assertThat(scheduler.getIdleState()).isSameInstanceAs(CONSTANT_IDLE);
+    assertThat(scheduler.getIdleState()).isSameAs(CONSTANT_IDLE);
     scheduler.idleConstantly(false);
-    assertThat(scheduler.getIdleState()).isSameInstanceAs(UNPAUSED);
+    assertThat(scheduler.getIdleState()).isSameAs(UNPAUSED);
   }
 
   @Test
   public void unPause_setsIdleState() {
     scheduler.setIdleState(PAUSED);
     scheduler.unPause();
-    assertThat(scheduler.getIdleState()).isSameInstanceAs(UNPAUSED);
+    assertThat(scheduler.getIdleState()).isSameAs(UNPAUSED);
   }
 
   @Test
@@ -83,7 +82,7 @@ public class SchedulerTest {
     final long time = scheduler.getCurrentTime();
     scheduler.setIdleState(UNPAUSED);
     assertThat(transcript).containsExactly("one", "two");
-    assertWithMessage("time").that(scheduler.getCurrentTime()).isEqualTo(time);
+    assertThat(scheduler.getCurrentTime()).named("time").isEqualTo(time);
   }
 
   @Test
@@ -95,7 +94,7 @@ public class SchedulerTest {
     final long time = scheduler.getCurrentTime();
     scheduler.setIdleState(CONSTANT_IDLE);
     assertThat(transcript).containsExactly("one", "two", "three");
-    assertWithMessage("time").that(scheduler.getCurrentTime()).isEqualTo(time + 1000);
+    assertThat(scheduler.getCurrentTime()).named("time").isEqualTo(time + 1000);
   }
 
   @Test
@@ -107,7 +106,7 @@ public class SchedulerTest {
     final long time = scheduler.getCurrentTime();
     scheduler.unPause();
     assertThat(transcript).containsExactly("one", "two");
-    assertWithMessage("time").that(scheduler.getCurrentTime()).isEqualTo(time);
+    assertThat(scheduler.getCurrentTime()).named("time").isEqualTo(time);
   }
 
   @Test
@@ -120,7 +119,7 @@ public class SchedulerTest {
     final long time = scheduler.getCurrentTime();
     scheduler.idleConstantly(true);
     assertThat(transcript).containsExactly("one", "two", "three");
-    assertWithMessage("time").that(scheduler.getCurrentTime()).isEqualTo(time + 1000);
+    assertThat(scheduler.getCurrentTime()).named("time").isEqualTo(time + 1000);
   }
 
   @Test
@@ -308,14 +307,14 @@ public class SchedulerTest {
     }, 0);
     scheduler.runOneTask();
     
-    assertWithMessage("order:first run").that(order).containsExactly(1, 2);
-    assertWithMessage("size:first run").that(scheduler.size()).isEqualTo(2);
+    assertThat(order).named("order:first run").containsExactly(1, 2);
+    assertThat(scheduler.size()).named("size:first run").isEqualTo(2);
     scheduler.runOneTask();
-    assertWithMessage("order:second run").that(order).containsExactly(1, 2, 3);
-    assertWithMessage("size:second run").that(scheduler.size()).isEqualTo(1);
+    assertThat(order).named("order:second run").containsExactly(1, 2, 3);
+    assertThat(scheduler.size()).named("size:second run").isEqualTo(1);
     scheduler.runOneTask();
-    assertWithMessage("order:third run").that(order).containsExactly(1, 2, 3, 4);
-    assertWithMessage("size:second run").that(scheduler.size()).isEqualTo(0);
+    assertThat(order).named("order:third run").containsExactly(1, 2, 3, 4);
+    assertThat(scheduler.size()).named("size:second run").isEqualTo(0);
   }
 
   @Test
@@ -336,8 +335,8 @@ public class SchedulerTest {
       }
     }, 0);
     
-    assertWithMessage("order").that(order).containsExactly(1, 2, 3);
-    assertWithMessage("size").that(scheduler.size()).isEqualTo(0);
+    assertThat(order).named("order").containsExactly(1, 2, 3);
+    assertThat(scheduler.size()).named("size").isEqualTo(0);
   }
 
   @Test
@@ -363,8 +362,8 @@ public class SchedulerTest {
       }
     }, 0);
     scheduler.advanceToLastPostedRunnable();
-    assertWithMessage("order").that(order).containsExactly(1, 2, 3, 4);
-    assertWithMessage("size").that(scheduler.size()).isEqualTo(0);
+    assertThat(order).named("order").containsExactly(1, 2, 3, 4);
+    assertThat(scheduler.size()).named("size").isEqualTo(0);
   }
 
   @Test
@@ -384,8 +383,8 @@ public class SchedulerTest {
         order.add(2);
       }
     }, 0);
-    assertWithMessage("order").that(order).containsExactly(1, 2, 3);
-    assertWithMessage("size").that(scheduler.size()).isEqualTo(0);
+    assertThat(order).named("order").containsExactly(1, 2, 3);
+    assertThat(scheduler.size()).named("size").isEqualTo(0);
   }
 
   @Test
@@ -406,12 +405,12 @@ public class SchedulerTest {
       }
     }, 0);
     
-    assertWithMessage("order:before").that(order).containsExactly(1, 2);
-    assertWithMessage("size:before").that(scheduler.size()).isEqualTo(1);
+    assertThat(order).named("order:before").containsExactly(1, 2);
+    assertThat(scheduler.size()).named("size:before").isEqualTo(1);
     scheduler.advanceToLastPostedRunnable();
-    assertWithMessage("order:after").that(order).containsExactly(1, 2, 3);
-    assertWithMessage("size:after").that(scheduler.size()).isEqualTo(0);
-    assertWithMessage("time:after").that(scheduler.getCurrentTime()).isEqualTo(1 + startTime);
+    assertThat(order).named("order:after").containsExactly(1, 2, 3);
+    assertThat(scheduler.size()).named("size:after").isEqualTo(0);
+    assertThat(scheduler.getCurrentTime()).named("time:after").isEqualTo(1 + startTime);
   }
 
   @Test
@@ -432,9 +431,9 @@ public class SchedulerTest {
       }
     }, 0);
 
-    assertWithMessage("order").that(order).containsExactly(1, 2, 3);
-    assertWithMessage("size").that(scheduler.size()).isEqualTo(0);
-    assertWithMessage("time").that(scheduler.getCurrentTime()).isEqualTo(1 + startTime);
+    assertThat(order).named("order").containsExactly(1, 2, 3);
+    assertThat(scheduler.size()).named("size").isEqualTo(0);
+    assertThat(scheduler.getCurrentTime()).named("time").isEqualTo(1 + startTime);
   }
 
   @Test

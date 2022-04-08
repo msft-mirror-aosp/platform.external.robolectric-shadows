@@ -90,8 +90,8 @@ public class ShadowSmsManagerTest {
     assertThat(params.getScAddress()).isEqualTo(scAddress);
     assertThat(params.getDestinationPort()).isEqualTo(destPort);
     assertThat(params.getData()).isEqualTo(data);
-    assertThat(params.getSentIntent()).isSameInstanceAs(sentIntent);
-    assertThat(params.getDeliveryIntent()).isSameInstanceAs(deliveryIntent);
+    assertThat(params.getSentIntent()).isSameAs(sentIntent);
+    assertThat(params.getDeliveryIntent()).isSameAs(deliveryIntent);
   }
 
   @Test(expected = IllegalArgumentException.class)

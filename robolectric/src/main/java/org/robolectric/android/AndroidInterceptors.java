@@ -31,7 +31,7 @@ public class AndroidInterceptors {
         new SystemTimeInterceptor(),
         new SystemArrayCopyInterceptor(),
         new LocaleAdjustLanguageCodeInterceptor(),
-        new SystemLogInterceptor(),
+        new SystemLogEInterceptor(),
         new NoOpInterceptor()
     );
   }
@@ -196,45 +196,34 @@ public class AndroidInterceptors {
     }
   }
 
-  /** AndroidInterceptor for System.logE and System.logW. */
-  public static class SystemLogInterceptor extends Interceptor {
-    public SystemLogInterceptor() {
-      super(
-          new MethodRef(System.class.getName(), "logE"),
-          new MethodRef(System.class.getName(), "logW"));
+  public static class SystemLogEInterceptor extends Interceptor {
+    public SystemLogEInterceptor() {
+      super(new MethodRef(System.class.getName(), "logE"));
     }
 
     static void logE(Object... params) {
-      log("System.logE: ", params);
-    }
-
-    static void logW(Object... params) {
-      log("System.logW: ", params);
-    }
-
-    static void log(String prefix, Object... params) {
-      StringBuilder message = new StringBuilder(prefix);
+      String message = "System.logE: ";
       for (Object param : params) {
-        message.append(param.toString());
+        message += param.toString();
       }
       System.err.println(message);
     }
 
     @Override
     public Function<Object, Object> handle(MethodSignature methodSignature) {
-      return (theClass, value, params) -> {
-        if ("logE".equals(methodSignature.methodName)) {
+      return new Function<Object, Object>() {
+        @Override
+        public Object call(Class<?> theClass, Object value, Object[] params) {
           logE(params);
-        } else if ("logW".equals(methodSignature.methodName)) {
-          logW(params);
+          return null;
         }
-        return null;
       };
     }
 
     @Override
     public MethodHandle getMethodHandle(String methodName, MethodType type) throws NoSuchMethodException, IllegalAccessException {
-      return lookup.findStatic(getClass(), methodName, methodType(void.class, Object[].class));
+      return lookup.findStatic(getClass(), "logE",
+          methodType(void.class, Object[].class));
     }
   }
 

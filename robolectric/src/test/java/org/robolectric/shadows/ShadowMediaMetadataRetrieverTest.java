@@ -4,7 +4,6 @@ import static android.media.MediaMetadataRetriever.METADATA_KEY_ALBUM;
 import static android.media.MediaMetadataRetriever.METADATA_KEY_ARTIST;
 import static android.media.MediaMetadataRetriever.METADATA_KEY_TITLE;
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.fail;
 import static org.robolectric.shadows.ShadowMediaMetadataRetriever.addException;
 import static org.robolectric.shadows.ShadowMediaMetadataRetriever.addFrame;
@@ -113,7 +112,7 @@ public class ShadowMediaMetadataRetrieverTest {
     addException(toDataSource(path2), new IllegalArgumentException());
     retriever.setDataSource(path);
     assertThat(retriever.extractMetadata(METADATA_KEY_ARTIST)).isEqualTo("The Rolling Stones");
-    assertThat(retriever.getFrameAtTime(1)).isSameInstanceAs(bitmap);
+    assertThat(retriever.getFrameAtTime(1)).isSameAs(bitmap);
     try {
       retriever2.setDataSource(path2);
       fail("Expected exception");
@@ -136,9 +135,9 @@ public class ShadowMediaMetadataRetrieverTest {
       retriever.setDataSource(path);
       fail("Expected exception");
     } catch (Exception caught) {
-      assertThat(caught).isSameInstanceAs(e);
-      assertWithMessage("Stack trace should originate in Shadow")
-         .that(e.getStackTrace()[0].getClassName())
+      assertThat(caught).isSameAs(e);
+      assertThat(e.getStackTrace()[0].getClassName())
+         .named("Stack trace should originate in Shadow")
          .isEqualTo(ShadowMediaMetadataRetriever.class.getName());
     }
   }

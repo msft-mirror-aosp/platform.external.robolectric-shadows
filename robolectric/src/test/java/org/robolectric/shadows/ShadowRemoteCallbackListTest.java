@@ -20,7 +20,7 @@ public class ShadowRemoteCallbackListTest {
 
     fooRemoteCallbackList.beginBroadcast();
 
-    assertThat(fooRemoteCallbackList.getBroadcastItem(0)).isSameInstanceAs(callback);
+    assertThat(fooRemoteCallbackList.getBroadcastItem(0)).isSameAs(callback);
   }
 
   public static class Foo implements IInterface {

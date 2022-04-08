@@ -1,7 +1,6 @@
 package org.robolectric;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.fail;
 
 import android.app.Application;
@@ -22,14 +21,15 @@ public class RobolectricTestRunnerSelfTest {
 
   @Test
   public void shouldInitializeAndBindApplicationButNotCallOnCreate() {
-    assertWithMessage("application").that((Application) ApplicationProvider.getApplicationContext())
+    assertThat((Application) ApplicationProvider.getApplicationContext())
+        .named("application")
         .isInstanceOf(MyTestApplication.class);
-    assertWithMessage("onCreate called")
-        .that(((MyTestApplication) ApplicationProvider.getApplicationContext()).onCreateWasCalled)
+    assertThat(((MyTestApplication) ApplicationProvider.getApplicationContext()).onCreateWasCalled)
+        .named("onCreate called")
         .isTrue();
     if (RuntimeEnvironment.useLegacyResources()) {
-      assertWithMessage("Application resource loader")
-          .that(RuntimeEnvironment.getAppResourceTable())
+      assertThat(RuntimeEnvironment.getAppResourceTable())
+          .named("Application resource loader")
           .isNotNull();
     }
   }
@@ -39,12 +39,12 @@ public class RobolectricTestRunnerSelfTest {
     Resources systemResources = Resources.getSystem();
     Resources appResources = ApplicationProvider.getApplicationContext().getResources();
 
-    assertWithMessage("system resources").that(systemResources).isNotNull();
+    assertThat(systemResources).named("system resources").isNotNull();
 
-    assertWithMessage("system resource").that(systemResources.getString(android.R.string.copy))
+    assertThat(systemResources.getString(android.R.string.copy)).named("system resource")
         .isEqualTo(appResources.getString(android.R.string.copy));
 
-    assertWithMessage("app resource").that(appResources.getString(R.string.howdy))
+    assertThat(appResources.getString(R.string.howdy)).named("app resource")
       .isNotNull();
     try {
       systemResources.getString(R.string.howdy);

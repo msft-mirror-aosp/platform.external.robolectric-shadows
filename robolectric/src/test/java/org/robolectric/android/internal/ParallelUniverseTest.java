@@ -54,9 +54,9 @@ public class ParallelUniverseTest {
     bootstrapWrapper.callSetUpApplicationState();
 
     assertThat(RuntimeEnvironment.getMasterScheduler())
-        .isSameInstanceAs(ShadowLooper.getShadowMainLooper().getScheduler());
+        .isSameAs(ShadowLooper.getShadowMainLooper().getScheduler());
     assertThat(RuntimeEnvironment.getMasterScheduler())
-        .isSameInstanceAs(ShadowApplication.getInstance().getForegroundThreadScheduler());
+        .isSameAs(ShadowApplication.getInstance().getForegroundThreadScheduler());
   }
 
   @Test
@@ -67,9 +67,9 @@ public class ParallelUniverseTest {
       final ShadowApplication shadowApplication =
           Shadow.extract(ApplicationProvider.getApplicationContext());
       assertThat(shadowApplication.getBackgroundThreadScheduler())
-          .isSameInstanceAs(shadowApplication.getForegroundThreadScheduler());
+          .isSameAs(shadowApplication.getForegroundThreadScheduler());
       assertThat(RuntimeEnvironment.getMasterScheduler())
-          .isSameInstanceAs(RuntimeEnvironment.getMasterScheduler());
+          .isSameAs(RuntimeEnvironment.getMasterScheduler());
     } finally {
       RoboSettings.setUseGlobalScheduler(false);
     }
@@ -81,7 +81,7 @@ public class ParallelUniverseTest {
     final ShadowApplication shadowApplication =
         Shadow.extract(ApplicationProvider.getApplicationContext());
     assertThat(shadowApplication.getBackgroundThreadScheduler())
-        .isNotSameInstanceAs(shadowApplication.getForegroundThreadScheduler());
+        .isNotSameAs(shadowApplication.getForegroundThreadScheduler());
   }
 
   @Test

@@ -1,7 +1,6 @@
 package org.robolectric;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import java.util.concurrent.CountDownLatch;
@@ -17,14 +16,14 @@ public class RuntimeEnvironmentTest {
   @Test
   public void setMainThread_forCurrentThread() {
     RuntimeEnvironment.setMainThread(Thread.currentThread());
-    assertThat(RuntimeEnvironment.getMainThread()).isSameInstanceAs(Thread.currentThread());
+    assertThat(RuntimeEnvironment.getMainThread()).isSameAs(Thread.currentThread());
   }
 
   @Test
   public void setMainThread_forNewThread() {
     Thread t = new Thread();
     RuntimeEnvironment.setMainThread(t);
-    assertThat(RuntimeEnvironment.getMainThread()).isSameInstanceAs(t);
+    assertThat(RuntimeEnvironment.getMainThread()).isSameAs(t);
   }
 
   @Test
@@ -43,8 +42,8 @@ public class RuntimeEnvironmentTest {
     if (!finished.await(1000, MILLISECONDS)) {
       throw new InterruptedException("Thread " + t + " didn't finish timely");
     }
-    assertWithMessage("testThread").that(RuntimeEnvironment.isMainThread()).isTrue();
-    assertWithMessage("thread t").that(res.get()).isFalse();
+    assertThat(RuntimeEnvironment.isMainThread()).named("testThread").isTrue();
+    assertThat(res.get()).named("thread t").isFalse();
   }
 
   @Test
@@ -63,8 +62,8 @@ public class RuntimeEnvironmentTest {
     if (!finished.await(1000, MILLISECONDS)) {
       throw new InterruptedException("Thread " + t + " didn't finish timely");
     }
-    assertWithMessage("testThread").that(RuntimeEnvironment.isMainThread()).isFalse();
-    assertWithMessage("thread t").that(res.get()).isTrue();
+    assertThat(RuntimeEnvironment.isMainThread()).named("testThread").isFalse();
+    assertThat(res.get()).named("thread t").isTrue();
   }
 
   @Test
@@ -78,6 +77,6 @@ public class RuntimeEnvironmentTest {
   public void getSetMasterScheduler() {
     Scheduler s = new Scheduler();
     RuntimeEnvironment.setMasterScheduler(s);
-    assertThat(RuntimeEnvironment.getMasterScheduler()).isSameInstanceAs(s);
+    assertThat(RuntimeEnvironment.getMasterScheduler()).isSameAs(s);
   }
 }

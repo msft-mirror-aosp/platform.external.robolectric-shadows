@@ -5,7 +5,6 @@ import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.LOLLIPOP_MR1;
 import static android.os.Build.VERSION_CODES.M;
-import static android.os.Build.VERSION_CODES.Q;
 import static org.robolectric.RuntimeEnvironment.getApiLevel;
 
 import java.util.Locale;
@@ -48,6 +47,7 @@ public class ShadowLocaleData {
       localeData.tinyWeekdayNames = new String[]{"", "S", "M", "T", "W", "T", "F", "S"};
       localeData.tinyStandAloneWeekdayNames = localeData.tinyWeekdayNames;
 
+      localeData.yesterday = "Yesterday";
       localeData.today = "Today";
       localeData.tomorrow = "Tomorrow";
     }
@@ -114,12 +114,8 @@ public class ShadowLocaleData {
     localeData.infinity = "\u221E";
     localeData.NaN = "NaN";
 
-    // These fields are removed in Android R or later
-    if (getApiLevel() <= Q) {
-      ReflectionHelpers.setField(localeData, "currencySymbol", "$");
-      ReflectionHelpers.setField(localeData, "internationalCurrencySymbol", "USD");
-      ReflectionHelpers.setField(localeData, "yesterday", "Yesterday");
-    }
+    localeData.currencySymbol = "$";
+    localeData.internationalCurrencySymbol = "USD";
 
     localeData.numberPattern = "\u0023,\u0023\u00230.\u0023\u0023\u0023";
     localeData.integerPattern = "\u0023,\u0023\u00230";

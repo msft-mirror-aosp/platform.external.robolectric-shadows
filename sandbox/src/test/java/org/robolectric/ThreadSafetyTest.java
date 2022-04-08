@@ -28,7 +28,7 @@ public class ThreadSafetyTest {
 
       instrumentedThread.join();
       Object shadowFromOtherThread = field.get(instrumentedThread);
-      assertThat(shadowFromThisThread).isSameInstanceAs(shadowFromOtherThread);
+      assertThat(shadowFromThisThread).isSameAs(shadowFromOtherThread);
     }
   }
 

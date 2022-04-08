@@ -1,7 +1,6 @@
 package org.robolectric.android.controller;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.app.Activity;
@@ -67,8 +66,8 @@ public class ActivityControllerTest {
     final Scheduler s = Robolectric.getForegroundThreadScheduler();
     final long startTime = s.getCurrentTime();
     TestDelayedPostActivity activity = Robolectric.setupActivity(TestDelayedPostActivity.class);
-    assertWithMessage("immediate task").that(activity.r1.wasRun).isTrue();
-    assertWithMessage("currentTime").that(s.getCurrentTime()).isEqualTo(startTime);
+    assertThat(activity.r1.wasRun).named("immediate task").isTrue();
+    assertThat(s.getCurrentTime()).named("currentTime").isEqualTo(startTime);
   }
 
   @Test
@@ -77,11 +76,11 @@ public class ActivityControllerTest {
     final Scheduler s = Robolectric.getForegroundThreadScheduler();
     final long startTime = s.getCurrentTime();
     TestDelayedPostActivity activity = Robolectric.setupActivity(TestDelayedPostActivity.class);
-    assertWithMessage("before flush").that(activity.r2.wasRun).isFalse();
-    assertWithMessage("currentTime before flush").that(s.getCurrentTime()).isEqualTo(startTime);
+    assertThat(activity.r2.wasRun).named("before flush").isFalse();
+    assertThat(s.getCurrentTime()).named("currentTime before flush").isEqualTo(startTime);
     s.advanceToLastPostedRunnable();
-    assertWithMessage("after flush").that(activity.r2.wasRun).isTrue();
-    assertWithMessage("currentTime after flush").that(s.getCurrentTime()).isEqualTo(startTime + 60000);
+    assertThat(activity.r2.wasRun).named("after flush").isTrue();
+    assertThat(s.getCurrentTime()).named("currentTime after flush").isEqualTo(startTime + 60000);
   }
 
   @Test
@@ -109,7 +108,7 @@ public class ActivityControllerTest {
     ShadowLooper.unPauseMainLooper();
     controller.create();
     assertThat(shadowOf(Looper.getMainLooper()).isPaused()).isFalse();
-    assertThat(transcript).containsAtLeast("finishedOnCreate", "onCreate");
+    assertThat(transcript).containsAllOf("finishedOnCreate", "onCreate");
   }
 
   @Test
@@ -134,73 +133,73 @@ public class ActivityControllerTest {
   @Test
   public void start_callsPerformStartWhilePaused() {
     controller.create().start();
-    assertThat(transcript).containsAtLeast("finishedOnStart", "onStart");
+    assertThat(transcript).containsAllOf("finishedOnStart", "onStart");
   }
 
   @Test
   public void stop_callsPerformStopWhilePaused() {
     controller.create().start().stop();
-    assertThat(transcript).containsAtLeast("finishedOnStop", "onStop");
+    assertThat(transcript).containsAllOf("finishedOnStop", "onStop");
   }
 
   @Test
   public void restart_callsPerformRestartWhilePaused() {
     controller.create().start().stop().restart();
-    assertThat(transcript).containsAtLeast("finishedOnRestart", "onRestart");
+    assertThat(transcript).containsAllOf("finishedOnRestart", "onRestart");
   }
 
   @Test
   public void pause_callsPerformPauseWhilePaused() {
     controller.create().pause();
-    assertThat(transcript).containsAtLeast("finishedOnPause", "onPause");
+    assertThat(transcript).containsAllOf("finishedOnPause", "onPause");
   }
 
   @Test
   public void resume_callsPerformResumeWhilePaused() {
     controller.create().start().resume();
-    assertThat(transcript).containsAtLeast("finishedOnResume", "onResume");
+    assertThat(transcript).containsAllOf("finishedOnResume", "onResume");
   }
 
   @Test
   public void destroy_callsPerformDestroyWhilePaused() {
     controller.create().destroy();
-    assertThat(transcript).containsAtLeast("finishedOnDestroy", "onDestroy");
+    assertThat(transcript).containsAllOf("finishedOnDestroy", "onDestroy");
   }
 
   @Test
   public void postCreate_callsOnPostCreateWhilePaused() {
     controller.create().postCreate(new Bundle());
-    assertThat(transcript).containsAtLeast("finishedOnPostCreate", "onPostCreate");
+    assertThat(transcript).containsAllOf("finishedOnPostCreate", "onPostCreate");
   }
 
   @Test
   public void postResume_callsOnPostResumeWhilePaused() {
     controller.create().postResume();
-    assertThat(transcript).containsAtLeast("finishedOnPostResume", "onPostResume");
+    assertThat(transcript).containsAllOf("finishedOnPostResume", "onPostResume");
   }
 
   @Test
   public void restoreInstanceState_callsPerformRestoreInstanceStateWhilePaused() {
     controller.create().restoreInstanceState(new Bundle());
-    assertThat(transcript).containsAtLeast("finishedOnRestoreInstanceState", "onRestoreInstanceState");
+    assertThat(transcript).containsAllOf("finishedOnRestoreInstanceState", "onRestoreInstanceState");
   }
 
   @Test
   public void newIntent_callsOnNewIntentWhilePaused() {
     controller.create().newIntent(new Intent(Intent.ACTION_VIEW));
-    assertThat(transcript).containsAtLeast("finishedOnNewIntent", "onNewIntent");
+    assertThat(transcript).containsAllOf("finishedOnNewIntent", "onNewIntent");
   }
 
   @Test
   public void userLeaving_callsPerformUserLeavingWhilePaused() {
     controller.create().userLeaving();
-    assertThat(transcript).containsAtLeast("finishedOnUserLeaveHint", "onUserLeaveHint");
+    assertThat(transcript).containsAllOf("finishedOnUserLeaveHint", "onUserLeaveHint");
   }
 
   @Test
   public void setup_callsLifecycleMethodsAndMakesVisible() {
     controller.setup();
-    assertThat(transcript).containsAtLeast("onCreate", "onStart", "onPostCreate", "onResume", "onPostResume");
+    assertThat(transcript).containsAllOf("onCreate", "onStart", "onPostCreate", "onResume", "onPostResume");
     assertThat(controller.get().getWindow().getDecorView().getParent().getClass()).isEqualTo(
         ViewRootImpl.class);
   }
@@ -208,7 +207,7 @@ public class ActivityControllerTest {
   @Test
   public void setupWithBundle_callsLifecycleMethodsAndMakesVisible() {
     controller.setup(new Bundle());
-    assertThat(transcript).containsAtLeast("onCreate", "onStart", "onRestoreInstanceState", "onPostCreate", "onResume", "onPostResume");
+    assertThat(transcript).containsAllOf("onCreate", "onStart", "onRestoreInstanceState", "onPostCreate", "onResume", "onPostResume");
     assertThat(controller.get().getWindow().getDecorView().getParent().getClass()).isEqualTo(
         ViewRootImpl.class);
   }
@@ -230,7 +229,7 @@ public class ActivityControllerTest {
     controller.setup();
     transcript.clear();
     controller.configurationChange(config);
-    assertThat(transcript).containsAtLeast("onPause", "onStop", "onDestroy", "onCreate", "onStart", "onRestoreInstanceState", "onPostCreate", "onResume", "onPostResume");
+    assertThat(transcript).containsAllOf("onPause", "onStop", "onDestroy", "onCreate", "onStart", "onRestoreInstanceState", "onPostCreate", "onResume", "onPostResume");
     assertThat(controller.get().getResources().getConfiguration().fontScale).isEqualTo(newFontScale);
   }
 
@@ -261,7 +260,7 @@ public class ActivityControllerTest {
         Robolectric.buildActivity(ConfigAwareActivity.class).setup();
     transcript.clear();
     configController.configurationChange(config);
-    assertThat(transcript).containsAtLeast("onPause", "onStop", "onDestroy", "onCreate", "onStart", "onResume");
+    assertThat(transcript).containsAllOf("onPause", "onStop", "onDestroy", "onCreate", "onStart", "onResume");
     assertThat(configController.get().getResources().getConfiguration().fontScale).isEqualTo(newFontScale);
     assertThat(configController.get().getResources().getConfiguration().orientation).isEqualTo(newOrientation);
   }
@@ -310,9 +309,9 @@ public class ActivityControllerTest {
     activity = configController.get();
 
     assertThat(activity.retainedFragment).isNotNull();
-    assertThat(activity.retainedFragment).isSameInstanceAs(retainedFragment);
+    assertThat(activity.retainedFragment).isSameAs(retainedFragment);
     assertThat(activity.nonRetainedFragment).isNotNull();
-    assertThat(activity.nonRetainedFragment).isNotSameInstanceAs(otherFragment);
+    assertThat(activity.nonRetainedFragment).isNotSameAs(otherFragment);
   }
 
   @Test

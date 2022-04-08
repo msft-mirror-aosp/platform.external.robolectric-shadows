@@ -21,6 +21,6 @@ public class ShadowBluetoothManagerTest {
 
   @Test
   public void getAdapter_shouldReturnBluetoothAdapter() {
-        assertThat(manager.getAdapter()).isSameInstanceAs(BluetoothAdapter.getDefaultAdapter());
+        assertThat(manager.getAdapter()).isSameAs(BluetoothAdapter.getDefaultAdapter());
     }
 }

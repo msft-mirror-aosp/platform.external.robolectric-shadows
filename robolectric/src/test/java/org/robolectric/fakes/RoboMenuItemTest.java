@@ -146,7 +146,7 @@ public class RoboMenuItemTest {
     assertThat(testDrawable).isNotNull();
     assertThat(item.getIcon()).isNull();
     item.setIcon(testDrawable);
-    assertThat(item.getIcon()).isSameInstanceAs(testDrawable);
+    assertThat(item.getIcon()).isSameAs(testDrawable);
   }
 
   @Test
@@ -158,7 +158,7 @@ public class RoboMenuItemTest {
 
   @Test
   public void setOnActionExpandListener_shouldReturnMenuItem() throws Exception {
-    assertThat(item.setOnActionExpandListener(listener)).isSameInstanceAs(item);
+    assertThat(item.setOnActionExpandListener(listener)).isSameAs(item);
   }
 
   static class TestOnActionExpandListener implements MenuItem.OnActionExpandListener {

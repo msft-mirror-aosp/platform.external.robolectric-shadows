@@ -28,7 +28,7 @@ public class ShadowRatingBarTest {
 
   @Test
   public void testOnSeekBarChangedListener() {
-    assertThat(ratingBar.getOnRatingBarChangeListener()).isSameInstanceAs(listener);
+    assertThat(ratingBar.getOnRatingBarChangeListener()).isSameAs(listener);
     ratingBar.setOnRatingBarChangeListener(null);
     assertThat(ratingBar.getOnRatingBarChangeListener()).isNull();
   }

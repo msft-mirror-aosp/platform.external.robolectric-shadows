@@ -142,12 +142,7 @@ public class ShadowAppOpsManager {
     return unsafeCheckOpRawNoThrow(AppOpsManager.strOpToOp(op), uid, packageName);
   }
 
-  /**
-   * Returns the <em>raw</em> mode associated with the op.
-   * Does not throw a security exception, does not translate {@link AppOpsManager#MODE_FOREGROUND}.
-   */
-  @Implementation(minSdk = Q)
-  protected int unsafeCheckOpRawNoThrow(int op, int uid, String packageName) {
+  private int unsafeCheckOpRawNoThrow(int op, int uid, String packageName) {
     Integer mode = appModeMap.get(getOpMapKey(uid, packageName, op));
     if (mode == null) {
       return AppOpsManager.MODE_ALLOWED;

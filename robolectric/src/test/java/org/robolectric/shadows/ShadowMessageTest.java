@@ -3,7 +3,6 @@ package org.robolectric.shadows;
 import static android.os.Build.VERSION_CODES.KITKAT_WATCH;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.os.Bundle;
@@ -176,7 +175,7 @@ public class ShadowMessageTest {
     Message msg2 = Message.obtain();
     ShadowMessage sMsg = shadowOf(msg);
     sMsg.setNext(msg2);
-    assertThat(sMsg.getNext()).isSameInstanceAs(msg2);
+    assertThat(sMsg.getNext()).isSameAs(msg2);
   }
   
   @Test
@@ -228,9 +227,9 @@ public class ShadowMessageTest {
     Message msg = Message.obtain(h, 234);
     msg.sendToTarget();
     Scheduler scheduler = Robolectric.getForegroundThreadScheduler();
-    assertWithMessage("before recycle").that(scheduler.size()).isEqualTo(1);
+    assertThat(scheduler.size()).named("before recycle").isEqualTo(1);
     shadowOf(msg).recycleUnchecked();
-    assertWithMessage("after recycle").that(scheduler.size()).isEqualTo(0);
+    assertThat(scheduler.size()).named("after recycle").isEqualTo(0);
   }
   
   @Test
@@ -238,11 +237,11 @@ public class ShadowMessageTest {
     Message dummy1 = Message.obtain();
     shadowOf(dummy1).recycleUnchecked();
     Message dummy2 = Message.obtain();
-    assertWithMessage("before resetting").that(dummy2).isSameInstanceAs(dummy1);
+    assertThat(dummy2).named("before resetting").isSameAs(dummy1);
 
     shadowOf(dummy2).recycleUnchecked();
     ShadowMessage.reset();
     dummy1 = Message.obtain();
-    assertWithMessage("after resetting").that(dummy1).isNotSameInstanceAs(dummy2);
+    assertThat(dummy1).named("after resetting").isNotSameAs(dummy2);
   }
 }

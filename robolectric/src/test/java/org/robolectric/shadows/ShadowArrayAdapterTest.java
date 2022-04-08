@@ -36,7 +36,7 @@ public class ShadowArrayAdapterTest {
 
   @Test
   public void verifyContext() {
-    assertThat(arrayAdapter.getContext()).isSameInstanceAs(context);
+    assertThat(arrayAdapter.getContext()).isSameAs(context);
   }
 
   @Test

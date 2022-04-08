@@ -284,6 +284,6 @@ public class ShadowAppOpsManagerTest {
       }
     }
 
-    assertThat(actualOps).containsAtLeastElementsIn(expectedOps);
+    assertThat(actualOps).containsAllIn(expectedOps);
   }
 }

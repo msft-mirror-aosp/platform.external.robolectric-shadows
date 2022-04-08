@@ -3,7 +3,6 @@ package org.robolectric.shadows;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -168,7 +167,7 @@ public class ShadowViewTest {
 
   @Test
   public void shouldKnowIfThisOrAncestorsAreVisible() throws Exception {
-    assertWithMessage("view isn't considered shown unless it has a view root").that(view.isShown()).isFalse();
+    assertThat(view.isShown()).named("view isn't considered shown unless it has a view root").isFalse();
     shadowOf(view).setMyParent(ReflectionHelpers.createNullProxy(ViewParent.class));
     assertThat(view.isShown()).isTrue();
     shadowOf(view).setMyParent(null);
@@ -284,7 +283,7 @@ public class ShadowViewTest {
   public void shouldRecordBackgroundDrawable() {
     Drawable drawable = new BitmapDrawable(BitmapFactory.decodeFile("some/fake/file"));
     view.setBackgroundDrawable(drawable);
-    assertThat(view.getBackground()).isSameInstanceAs(drawable);
+    assertThat(view.getBackground()).isSameAs(drawable);
     assertThat(ShadowView.visualize(view)).isEqualTo("background:\nBitmap for file:some/fake/file");
   }
 
@@ -390,13 +389,13 @@ public class ShadowViewTest {
   public void shouldSetAnimation() throws Exception {
     Animation anim = new TestAnimation();
     view.setAnimation(anim);
-    assertThat(view.getAnimation()).isSameInstanceAs(anim);
+    assertThat(view.getAnimation()).isSameAs(anim);
   }
 
   @Test
   public void shouldFindViewWithTag() {
     view.setTag("tagged");
-    assertThat((View) view.findViewWithTag("tagged")).isSameInstanceAs(view);
+    assertThat((View) view.findViewWithTag("tagged")).isSameAs(view);
   }
 
   @Test
@@ -433,7 +432,7 @@ public class ShadowViewTest {
   public void getViewTreeObserver_shouldReturnTheSameObserverFromMultipleCalls() throws Exception {
     ViewTreeObserver observer = view.getViewTreeObserver();
     assertThat(observer).isInstanceOf(ViewTreeObserver.class);
-    assertThat(view.getViewTreeObserver()).isSameInstanceAs(observer);
+    assertThat(view.getViewTreeObserver()).isSameAs(observer);
   }
 
   @Test
@@ -441,9 +440,9 @@ public class ShadowViewTest {
     TouchableView touchableView = new TouchableView(context);
     MotionEvent event = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 12f, 34f, 0);
     touchableView.dispatchTouchEvent(event);
-    assertThat(touchableView.event).isSameInstanceAs(event);
+    assertThat(touchableView.event).isSameAs(event);
     view.dispatchTouchEvent(event);
-    assertThat(shadowOf(view).getLastTouchEvent()).isSameInstanceAs(event);
+    assertThat(shadowOf(view).getLastTouchEvent()).isSameAs(event);
   }
 
   @Test
@@ -457,7 +456,7 @@ public class ShadowViewTest {
     });
     MotionEvent event = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 12f, 34f, 0);
     view.dispatchTouchEvent(event);
-    assertThat(shadowOf(view).getLastTouchEvent()).isSameInstanceAs(event);
+    assertThat(shadowOf(view).getLastTouchEvent()).isSameAs(event);
     assertThat(called.get()).isTrue();
   }
 
@@ -851,7 +850,7 @@ public class ShadowViewTest {
 
     WindowId windowId = parent.getWindowId();
     assertThat(windowId).isNotNull();
-    assertThat(child.getWindowId()).isSameInstanceAs(windowId);
+    assertThat(child.getWindowId()).isSameAs(windowId);
     assertThat(child.getWindowId()).isEqualTo(windowId); // equals must work!
 
     MyView anotherChild = new MyView("another child", transcript);

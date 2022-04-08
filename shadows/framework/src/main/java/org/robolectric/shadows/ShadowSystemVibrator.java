@@ -7,7 +7,6 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.N_MR1;
 import static android.os.Build.VERSION_CODES.O;
 import static android.os.Build.VERSION_CODES.P;
-import static android.os.Build.VERSION_CODES.S;
 
 import android.media.AudioAttributes;
 import android.os.Build.VERSION_CODES;
@@ -15,14 +14,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemVibrator;
 import android.os.VibrationEffect;
-import android.os.vibrator.VibrationEffectSegment;
-
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 import org.robolectric.util.ReflectionHelpers;
-
-import java.util.Arrays;
 
 @Implements(value = SystemVibrator.class, isInAndroidSdk = false)
 public class ShadowSystemVibrator extends ShadowVibrator {
@@ -77,36 +72,24 @@ public class ShadowSystemVibrator extends ShadowVibrator {
 
   @Implementation(minSdk = VERSION_CODES.CUR_DEVELOPMENT)
   protected void vibrate(int uid, String opPkg, VibrationEffect effect,
-          String reason, AudioAttributes attributes) {
-    long duration;
-    if (RuntimeEnvironment.getApiLevel() >= P) {
-      duration = effect.getDuration();
+      String reason, AudioAttributes attributes) {
+    if (effect instanceof VibrationEffect.Waveform) {
+      VibrationEffect.Waveform waveform = (VibrationEffect.Waveform) effect;
+      recordVibratePattern(waveform.getTimings(), waveform.getRepeatIndex());
+
     } else {
-      duration = ReflectionHelpers.callInstanceMethod(effect, "getTiming");
-    }
+      VibrationEffect.OneShot oneShot = (VibrationEffect.OneShot) effect;
 
-    if (RuntimeEnvironment.getApiLevel() >= S) {
-      long[] pattern = ((VibrationEffect.Composed) effect).getSegments().stream()
-              .mapToLong(VibrationEffectSegment::getDuration)
-              .toArray();
-      int repeatIndex = ((VibrationEffect.Composed) effect).getRepeatIndex();
-      recordVibratePattern(duration, pattern, repeatIndex);
-      return;
-    }
+      long timing;
 
-    if (RuntimeEnvironment.getApiLevel() >= O) {
-      try {
-        // Try to extract fields from VibrationEffect.Waveform.
-        long[] pattern = ReflectionHelpers.callInstanceMethod(effect, "getTimings");
-        int repeatIndex = ReflectionHelpers.callInstanceMethod(effect, "getRepeatIndex");
-        recordVibratePattern(pattern, repeatIndex);
-        return;
-      } catch (RuntimeException e) {
-        // Not a VibrationEffect.Waveform, fallback to generic effect.
+      if (RuntimeEnvironment.getApiLevel() >= P) {
+        timing = oneShot.getDuration();
+      } else {
+        timing = ReflectionHelpers.callInstanceMethod(oneShot, "getTiming");
       }
-    }
 
-    recordVibrate(duration);
+      recordVibrate(timing);
+    }
   }
 
   private void recordVibrate(long milliseconds) {
@@ -117,18 +100,16 @@ public class ShadowSystemVibrator extends ShadowVibrator {
   }
 
   private void recordVibratePattern(long[] pattern, int repeat) {
-    long duration = repeat < 0 ? Arrays.stream(pattern).sum() : Long.MAX_VALUE;
-    recordVibratePattern(duration, pattern, repeat);
-  }
-
-  private void recordVibratePattern(long milliseconds, long[] pattern, int repeat) {
     vibrating = true;
-    this.milliseconds = milliseconds;
     this.pattern = pattern;
     this.repeat = repeat;
     handler.removeCallbacks(stopVibratingRunnable);
-    if (milliseconds < Long.MAX_VALUE) {
-      handler.postDelayed(stopVibratingRunnable, milliseconds);
+    if (repeat < 0) {
+      long endDelayMillis = 0;
+      for (long t : pattern) {
+        endDelayMillis += t;
+      }
+      handler.postDelayed(stopVibratingRunnable, endDelayMillis);
     }
   }
 

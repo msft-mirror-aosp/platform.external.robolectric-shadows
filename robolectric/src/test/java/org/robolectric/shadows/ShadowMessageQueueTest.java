@@ -2,7 +2,6 @@ package org.robolectric.shadows;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.fail;
 import static org.robolectric.Shadows.shadowOf;
 import static org.robolectric.util.ReflectionHelpers.ClassParameter.from;
@@ -75,7 +74,7 @@ public class ShadowMessageQueueTest {
   @Test
   public void test_setGetHead() {
     shadowQueue.setHead(testMessage);
-    assertWithMessage("getHead()").that(shadowQueue.getHead()).isSameInstanceAs(testMessage);
+    assertThat(shadowQueue.getHead()).named("getHead()").isSameAs(testMessage);
   }
 
   private boolean enqueueMessage(Message msg, long when) {
@@ -96,50 +95,50 @@ public class ShadowMessageQueueTest {
   @Test
   public void enqueueMessage_setsHead() {
     enqueueMessage(testMessage, 100);
-    assertWithMessage("head").that(shadowQueue.getHead()).isSameInstanceAs(testMessage);
+    assertThat(shadowQueue.getHead()).named("head").isSameAs(testMessage);
   }
 
   @Test
   public void enqueueMessage_returnsTrue() {
-    assertWithMessage("retval").that(enqueueMessage(testMessage, 100)).isTrue();
+    assertThat(enqueueMessage(testMessage, 100)).named("retval").isTrue();
   }
 
   @Test
   public void enqueueMessage_setsWhen() {
     enqueueMessage(testMessage, 123);
-    assertWithMessage("when").that(testMessage.getWhen()).isEqualTo(123);
+    assertThat(testMessage.getWhen()).named("when").isEqualTo(123);
   }
   
   @Test
   public void enqueueMessage_returnsFalse_whenQuitting() {
     setField(queue, quitField, true);
-    assertWithMessage("enqueueMessage()").that(enqueueMessage(testMessage, 1)).isFalse();
+    assertThat(enqueueMessage(testMessage, 1)).named("enqueueMessage()").isFalse();
   }
 
   @Test
   public void enqueueMessage_doesntSchedule_whenQuitting() {
     setField(queue, quitField, true);
     enqueueMessage(testMessage, 1);
-    assertWithMessage("scheduler_size").that(scheduler.size()).isEqualTo(0);
+    assertThat(scheduler.size()).named("scheduler_size").isEqualTo(0);
   }
   
   @Test
   public void enqueuedMessage_isSentToHandler() {
     enqueueMessage(testMessage, 200);
     scheduler.advanceTo(199);
-    assertWithMessage("handled:before").that(handler.handled).isEmpty();
+    assertThat(handler.handled).named("handled:before").isEmpty();
     scheduler.advanceTo(200);
-    assertWithMessage("handled:after").that(handler.handled).containsExactly(testMessage);
+    assertThat(handler.handled).named("handled:after").containsExactly(testMessage);
   }
   
   @Test
   public void removedMessage_isNotSentToHandler() {
     enqueueMessage(testMessage, 200);
-    assertWithMessage("scheduler size:before").that(scheduler.size()).isEqualTo(1);
+    assertThat(scheduler.size()).named("scheduler size:before").isEqualTo(1);
     removeMessages(handler, testMessage.what, null);
     scheduler.advanceToLastPostedRunnable();
-    assertWithMessage("scheduler size:after").that(scheduler.size()).isEqualTo(0);
-    assertWithMessage("handled").that(handler.handled).isEmpty();
+    assertThat(scheduler.size()).named("scheduler size:after").isEqualTo(0);
+    assertThat(handler.handled).named("handled").isEmpty();
   }
 
   @Test
@@ -148,7 +147,7 @@ public class ShadowMessageQueueTest {
     Message m2 = handler.obtainMessage(2);
     enqueueMessage(m2, 0);
     scheduler.advanceToLastPostedRunnable();
-    assertWithMessage("handled").that(handler.handled).containsExactly(m2, testMessage);
+    assertThat(handler.handled).named("handled").containsExactly(m2, testMessage);
   }
   
   @Test
@@ -157,9 +156,9 @@ public class ShadowMessageQueueTest {
       @Override
       public void handleMessage(Message msg) {
         boolean inUse = callInstanceMethod(msg, "isInUse");
-        assertWithMessage(msg.what + ":inUse").that(inUse).isTrue();
+        assertThat(inUse).named(msg.what + ":inUse").isTrue();
         Message next = getField(msg, "next");
-        assertWithMessage(msg.what + ":next").that(next).isNull();
+        assertThat(next).named(msg.what + ":next").isNull();
       }
     };
     Message msg = handler.obtainMessage(1);
@@ -169,11 +168,11 @@ public class ShadowMessageQueueTest {
     scheduler.advanceToNextPostedRunnable();
     
     // Check that it's been properly recycled.
-    assertWithMessage("msg.what").that(msg.what).isEqualTo(0);
+    assertThat(msg.what).named("msg.what").isEqualTo(0);
     
     scheduler.advanceToNextPostedRunnable();
 
-    assertWithMessage("msg2.what").that(msg2.what).isEqualTo(0);
+    assertThat(msg2.what).named("msg2.what").isEqualTo(0);
   }
   
   @Test 
@@ -182,11 +181,11 @@ public class ShadowMessageQueueTest {
     Message msg2 = handler.obtainMessage(5678);
     handler.sendMessage(msg);
     handler.sendMessage(msg2);
-    assertWithMessage("before-1234").that(handler.hasMessages(1234)).isTrue();
-    assertWithMessage("before-5678").that(handler.hasMessages(5678)).isTrue();
+    assertThat(handler.hasMessages(1234)).named("before-1234").isTrue();
+    assertThat(handler.hasMessages(5678)).named("before-5678").isTrue();
     shadowQueue.reset();
-    assertWithMessage("after-1234").that(handler.hasMessages(1234)).isFalse();
-    assertWithMessage("after-5678").that(handler.hasMessages(5678)).isFalse();
+    assertThat(handler.hasMessages(1234)).named("after-1234").isFalse();
+    assertThat(handler.hasMessages(5678)).named("after-5678").isFalse();
   }
 
   @Test
@@ -222,7 +221,7 @@ public class ShadowMessageQueueTest {
     scheduler.advanceToLastPostedRunnable();
     removeSyncBarrier(queue, token);
     assertThat(shadowQueue.getHead()).isNull();
-    assertWithMessage("handled:after").that(handler.handled).containsExactly(testMessage);
+    assertThat(handler.handled).named("handled:after").containsExactly(testMessage);
   }
 
   @Test
@@ -234,7 +233,7 @@ public class ShadowMessageQueueTest {
     assertThat(shadowQueue.getHead()).isEqualTo(testMessage);
     scheduler.advanceToLastPostedRunnable();
     assertThat(shadowQueue.getHead()).isNull();
-    assertWithMessage("handled:after").that(handler.handled).containsExactly(testMessage);
+    assertThat(handler.handled).named("handled:after").containsExactly(testMessage);
   }
 
   @Test
@@ -244,7 +243,7 @@ public class ShadowMessageQueueTest {
     scheduler.advanceToLastPostedRunnable();
     removeSyncBarrier(queue, token);
     assertThat(shadowQueue.getHead()).isNull();
-    assertWithMessage("handled:after").that(handler.handled).containsExactly(testMessage);
+    assertThat(handler.handled).named("handled:after").containsExactly(testMessage);
   }
 
   private static void removeSyncBarrier(MessageQueue queue, int token) {

@@ -265,12 +265,6 @@ public class ShadowUserManager {
     bundle.putBoolean(restrictionKey, value);
   }
 
-  @Implementation(minSdk = JELLY_BEAN_MR2)
-  protected void setUserRestriction(String key, boolean value) {
-    Bundle bundle = getUserRestrictionsForUser(Process.myUserHandle());
-    bundle.putBoolean(key, value);
-  }
-
   /**
    * Removes all user restrictions set of a user identified by {@code userHandle}.
    */

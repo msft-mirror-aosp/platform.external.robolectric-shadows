@@ -31,7 +31,7 @@ public class ShadowSeekBarTest {
 
   @Test
   public void testOnSeekBarChangedListener() {
-    assertThat(shadow.getOnSeekBarChangeListener()).isSameInstanceAs(listener);
+    assertThat(shadow.getOnSeekBarChangeListener()).isSameAs(listener);
     seekBar.setOnSeekBarChangeListener(null);
     assertThat(shadow.getOnSeekBarChangeListener()).isNull();
   }
