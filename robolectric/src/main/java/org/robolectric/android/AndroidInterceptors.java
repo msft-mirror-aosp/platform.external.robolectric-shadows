@@ -9,7 +9,6 @@ import android.content.Context;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.ref.PhantomReference;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -250,8 +249,7 @@ public class AndroidInterceptors {
     public ReferenceRefersToInterceptor() {
       super(
           new MethodRef(WeakReference.class.getName(), METHOD),
-          new MethodRef(SoftReference.class.getName(), METHOD),
-          new MethodRef(PhantomReference.class.getName(), METHOD));
+          new MethodRef(SoftReference.class.getName(), METHOD));
     }
 
     static boolean refersTo(Reference ref, Object obj) {
