@@ -91,6 +91,9 @@ $(LOCAL_BUILT_MODULE): $(copy_test_resource_files) $(copy_android_all_jars) $(cl
 	  -Drobolectric.resourcesMode=binary \
 	  -Drobolectric-tests.base-dir=$(private_test_base_dir) \
 	  -Drobolectric.dependency.dir=$(private_android_all_dir) \
+	  --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
+	  --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED \
+	  --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED \
 	  $(private_debug_test_args) \
 	  -cp $(private_host_jdk_tools_jar):$(private_test_base_dir):$(private_classpath_jars) \
 	  org.junit.runner.JUnitCore \
