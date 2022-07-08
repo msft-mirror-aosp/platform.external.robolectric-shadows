@@ -81,6 +81,7 @@ function junit() {
     -Drobolectric.offline=true
     -Drobolectric.logging=stdout
     -cp "$classpath"
+    --add-opens=java.base/java.lang=ALL-UNNAMED
     com.android.junitxml.JUnitXmlRunner
   )
   echo "${command[@]}" "$@"
