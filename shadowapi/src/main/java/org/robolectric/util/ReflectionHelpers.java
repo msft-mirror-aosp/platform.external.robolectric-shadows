@@ -413,18 +413,35 @@ public class ReflectionHelpers {
     field.setAccessible(true);
     // remove 'final' modifier if present
     if ((field.getModifiers() & Modifier.FINAL) == Modifier.FINAL) {
+      Field modifiersField = getModifiersField();
+      modifiersField.setAccessible(true);
       try {
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        try {
-          modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-        } catch (IllegalAccessException e) {
-          throw new AssertionError(e);
-        }
-      } catch (NoSuchFieldException e) {
-        // ignore missing fields
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+      } catch (IllegalAccessException e) {
+
+        throw new AssertionError(e);
       }
     }
+  }
+
+  private static Field getModifiersField() {
+    try {
+      return Field.class.getDeclaredField("modifiers");
+    } catch (NoSuchFieldException e) {
+      try {
+        Method getFieldsMethod = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
+        getFieldsMethod.setAccessible(true);
+        Field[] fields = (Field[]) getFieldsMethod.invoke(Field.class, false);
+        for (Field modifiersField : fields) {
+          if ("modifiers".equals(modifiersField.getName())) {
+            return modifiersField;
+          }
+        }
+      } catch (ReflectiveOperationException innerE) {
+        throw new AssertionError(innerE);
+      }
+    }
+    throw new AssertionError();
   }
 
   public static Object defaultValueForType(String returnType) {
