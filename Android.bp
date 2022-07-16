@@ -105,6 +105,7 @@ java_device_for_host {
         "services.accessibility",
         "telephony-common",
         "android.car",
+        "android.car.builtin",
     ],
 }
 
