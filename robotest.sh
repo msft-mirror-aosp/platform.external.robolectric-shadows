@@ -73,6 +73,7 @@ function junit() {
     # Remove the timeout so Robolectric doesn't get killed while debugging
     local debug_timeout="0"
   fi
+  # For --add-opens jdk.internal.util.random see b/238100560.
   local command=(
     "${PRIVATE_ROBOLECTRIC_SCRIPT_PATH}/java-timeout"
     "${debug_timeout:-${PRIVATE_TIMEOUT}}"
@@ -81,6 +82,9 @@ function junit() {
     -Drobolectric.offline=true
     -Drobolectric.logging=stdout
     -cp "$classpath"
+    --add-opens=java.base/java.lang=ALL-UNNAMED
+    --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+    --add-opens=java.base/jdk.internal.util.random=ALL-UNNAMED
     com.android.junitxml.JUnitXmlRunner
   )
   echo "${command[@]}" "$@"
