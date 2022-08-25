@@ -54,27 +54,6 @@ robolectric_build_props {
     name: "robolectric_build_props",
 }
 
-// package the framework raw/uncompiled resources and assets into a jar
-// This logic can be removed once the transition to binary resources is complete
-java_library {
-    name: "robolectric_framework_raw_res_orig",
-    java_resources: [":robolectric_framework_raw_res_files"],
-}
-
-// Move the raw/uncompiled resources and assets into raw-res/
-// This logic can be removed once the transition to binary resources is complete
-java_genrule_host {
-    name: "robolectric_framework_raw_res",
-    out: ["robolectric_framework_raw_res.jar"],
-    srcs: [":robolectric_framework_raw_res_orig"],
-    tools: ["zip2zip"],
-    cmd: "$(location zip2zip) " +
-        "-i $(location :robolectric_framework_raw_res_orig) " +
-        "-o $(location robolectric_framework_raw_res.jar) " +
-        "-x META-INF/**/* " +
-        "**/*:raw-res/",
-}
-
 java_genrule_host {
     name: "robolectric_framework_res",
     tools: ["zip2zip"],
@@ -115,7 +94,6 @@ java_library_host {
         "robolectric_android-all-device-deps",
         "robolectric_tzdata",
         "robolectric_framework_res",
-        "robolectric_framework_raw_res",
     ],
     dist: {
         targets: [
