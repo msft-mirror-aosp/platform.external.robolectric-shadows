@@ -24,7 +24,7 @@ java_library_host {
         "asm-commons-9.2",
         "guava",
         "asm-tree-9.2",
-        "gson-prebuilt-jar",
+        "gson",
         "asm-9.2",
         "jsr305",
     ],
@@ -65,7 +65,7 @@ java_test_host {
         "objenesis",
         "junit",
         "truth-prebuilt",
-        "gson-prebuilt-jar",
+        "gson",
         "jsr305",
     ],
 
