@@ -12,6 +12,9 @@ my_target_xml := $(intermediates)/$(my_filename_stem)-output.xml
 my_target_output := $(intermediates)/$(my_filename_stem)-output.txt
 my_target_retval := $(intermediates)/$(my_filename_stem)-retval.txt
 
+ALL_TARGETS.$(my_target_output).META_LIC:=$(module_license_metadata)
+ALL_TARGETS.$(my_target_xml).META_LIC:=$(module_license_metadata)
+
 # We should always re-run the tests, even if nothing has changed.
 # So until the build system has a dedicated "no cache" option, claim
 # to write a file that is never produced.
@@ -22,7 +25,7 @@ $(my_target_output): PRIVATE_MODULE := $(LOCAL_MODULE)
 $(my_target_output): PRIVATE_TESTS := $(my_tests)
 $(my_target_output): PRIVATE_JARS := $(my_jars)
 $(my_target_output): PRIVATE_JAVA_ARGS := $(my_java_args)
-$(my_target_output): PRIVATE_JAVA_PATH := $(ANDROID_JAVA11_HOME)/bin:
+$(my_target_output): PRIVATE_JAVA_PATH := $(ANDROID_JAVA17_HOME)/bin:
 $(my_target_output): PRIVATE_ROBOLECTRIC_PATH := $(my_robolectric_path)
 $(my_target_output): PRIVATE_ROBOLECTRIC_SCRIPT_PATH := $(my_robolectric_script_path)
 $(my_target_output): PRIVATE_TARGET_MESSAGE := $(my_target_message)

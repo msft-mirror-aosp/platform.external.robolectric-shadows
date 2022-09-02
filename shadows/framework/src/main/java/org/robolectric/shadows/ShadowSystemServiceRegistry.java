@@ -22,7 +22,7 @@ public class ShadowSystemServiceRegistry {
 
     Class staticApplicationServiceFetcherClass = null;
     if (RuntimeEnvironment.getApiLevel() >= Build.VERSION_CODES.N
-       && RuntimeEnvironment.getApiLevel() < Build.VERSION_CODES.S) {
+      && RuntimeEnvironment.getApiLevel() < Build.VERSION_CODES.S) {
        staticApplicationServiceFetcherClass =
            classForName("android.app.SystemServiceRegistry$StaticApplicationContextServiceFetcher");
     } else if (RuntimeEnvironment.getApiLevel() == Build.VERSION_CODES.M) {
