@@ -74,6 +74,7 @@ function junit() {
     local debug_timeout="0"
   fi
   # For --add-opens jdk.internal.util.random see b/238100560.
+  # For --add-opens java.io see b/251387255.
   local command=(
     "${PRIVATE_ROBOLECTRIC_SCRIPT_PATH}/java-timeout"
     "${debug_timeout:-${PRIVATE_TIMEOUT}}"
@@ -85,6 +86,7 @@ function junit() {
     --add-opens=java.base/java.lang=ALL-UNNAMED
     --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
     --add-opens=java.base/jdk.internal.util.random=ALL-UNNAMED
+    --add-opens=java.base/java.io=ALL-UNNAMED
     com.android.junitxml.JUnitXmlRunner
   )
   echo "${command[@]}" "$@"
