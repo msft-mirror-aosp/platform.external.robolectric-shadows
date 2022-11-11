@@ -51,4 +51,9 @@ java_test_host {
         "jsr305",
     ],
     test_suites: ["general-tests"],
+    errorprone: {
+        javacflags: [
+            "-Xep:ReturnValueIgnored:WARN",
+        ],
+    },
 }
