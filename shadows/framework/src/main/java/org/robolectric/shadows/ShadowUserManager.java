@@ -8,6 +8,7 @@ import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.N_MR1;
 import static android.os.Build.VERSION_CODES.R;
 import static android.os.Build.VERSION_CODES.TIRAMISU;
+import static android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE;
 
 import static org.robolectric.shadow.api.Shadow.directlyOn;
 
@@ -17,6 +18,7 @@ import android.annotation.UserIdInt;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.UserInfo;
+import android.content.pm.UserProperties;
 import android.os.Bundle;
 import android.os.IUserManager;
 import android.os.Process;
@@ -72,6 +74,7 @@ public class ShadowUserManager {
   private Map<Integer, UserInfo> userInfoMap = new HashMap<>();
   private Map<Integer, List<UserInfo>> profiles = new HashMap<>();
   private Map<Integer, Integer> profileToParent = new HashMap<>();
+  private Map<Integer, UserProperties> mUserPropertiesMap = new HashMap<>();
 
   private Context context;
   private boolean enforcePermissions;
@@ -636,5 +639,17 @@ public class ShadowUserManager {
       userPidMap.clear();
       userPidMap.put(UserHandle.USER_SYSTEM, Process.myUid());
     }
+  }
+
+  public void setupUserProperty(int userId, int showInSettings) {
+    UserProperties userProperties = new UserProperties(new UserProperties.Builder()
+            .setShowInSettings(showInSettings).build());
+    mUserPropertiesMap.putIfAbsent(userId, userProperties);
+  }
+
+  @Implementation(minSdk = UPSIDE_DOWN_CAKE)
+  protected UserProperties getUserProperties(UserHandle user) {
+    return mUserPropertiesMap.getOrDefault(user.getIdentifier(),
+            new UserProperties(new UserProperties.Builder().build()));
   }
 }
