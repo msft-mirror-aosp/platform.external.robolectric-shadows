@@ -88,4 +88,10 @@ java_test_host {
     test_options: {
         unit_test: false,
     },
+
+    errorprone: {
+        javacflags: [
+            "-Xep:ReturnValueIgnored:WARN",
+        ],
+    },
 }
