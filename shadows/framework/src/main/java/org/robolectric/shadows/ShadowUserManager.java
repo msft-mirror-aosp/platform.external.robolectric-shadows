@@ -66,8 +66,6 @@ public class ShadowUserManager {
   private boolean userUnlocked = true;
   private boolean managedProfile = false;
   private boolean isSystemUser = true;
-  private static boolean isHeadlessSystemUserMode = false;
-
   private Map<Integer, Bundle> userRestrictions = new HashMap<>();
   private BiMap<UserHandle, Long> userProfiles = HashBiMap.create();
   private Map<String, Bundle> applicationRestrictions = new HashMap<>();
@@ -344,15 +342,6 @@ public class ShadowUserManager {
 
   private boolean hasManageUsersPermission() {
     return context.getPackageManager().checkPermission(permission.MANAGE_USERS, context.getPackageName()) == PackageManager.PERMISSION_GRANTED;
-  }
-
-  public static void setIsHeadlessSystemUserMode(boolean isHSUM) {
-    isHeadlessSystemUserMode = isHSUM;
-  }
-
-  @Implementation
-  protected static boolean isHeadlessSystemUserMode() {
-      return isHeadlessSystemUserMode;
   }
 
   private void checkPermissions() {
