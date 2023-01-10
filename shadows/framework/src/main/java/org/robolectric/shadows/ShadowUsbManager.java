@@ -280,7 +280,8 @@ public class ShadowUsbManager {
         0,
         false,
         false,
-        false
+        false,
+        0
     );
     // END-INTERNAL
   }
