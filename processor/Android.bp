@@ -21,11 +21,11 @@ java_library_host {
     static_libs: [
         "Robolectric_annotations",
         "Robolectric_shadowapi",
-        "asm-commons-9.2",
+        "ow2-asm-commons",
         "guava",
-        "asm-tree-9.2",
-        "gson-prebuilt-jar",
-        "asm-9.2",
+        "ow2-asm-tree",
+        "gson",
+        "ow2-asm",
         "jsr305",
     ],
 
@@ -65,7 +65,7 @@ java_test_host {
         "objenesis",
         "junit",
         "truth-prebuilt",
-        "gson-prebuilt-jar",
+        "gson",
         "jsr305",
     ],
 
