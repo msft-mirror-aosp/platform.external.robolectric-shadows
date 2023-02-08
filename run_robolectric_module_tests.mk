@@ -53,7 +53,7 @@ copy_android_all_jar_pairs := \
   $(android_all_source_dir)/android-all-9-robolectric-4913185-2.jar:$(android_all_target_dir)/android-all-9-robolectric-4913185-2.jar \
   $(android_all_source_dir)/android-all-10-robolectric-5803371.jar:$(android_all_target_dir)/android-all-10-robolectric-5803371.jar \
   $(android_all_source_dir)/android-all-11-robolectric-6757853.jar:$(android_all_target_dir)/android-all-11-robolectric-6757853.jar \
-  $(android_all_source_dir)/android-all-S-beta3-robolectric-7541949.jar:$(android_all_target_dir)/android-all-S-beta3-robolectric-7541949.jar \
+  $(android_all_source_dir)/android-all-12-robolectric-7732740.jar:$(android_all_target_dir)/android-all-12-robolectric-7732740.jar \
   $(local_android_all_source_jar):$(android_all_target_dir)/android-all-current-robolectric-r0.jar
 copy_android_all_jars := $(call copy-many-files, $(copy_android_all_jar_pairs))
 
