@@ -82,6 +82,9 @@ function junit() {
     -Drobolectric.dependency.dir="${PRIVATE_ROBOLECTRIC_PATH}"
     -Drobolectric.offline=true
     -Drobolectric.logging=stdout
+    -Drobolectric.usePreinstrumentedJars=false
+    -Drobolectric.conscryptMode=OFF
+    -Drobolectric.logging.enabled=true
     -cp "$classpath"
     --add-opens=java.base/java.lang=ALL-UNNAMED
     --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
