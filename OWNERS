@@ -1,10 +1,14 @@
+# This modified, 4 year old copy of robelectric is unsupported
+# You should switch your tests to use /external/robolectric.
+# You will not receive support on this project and very few projects still use
+# it.
+rexhoffman@google.com
 brettchabot@google.com
 hoisie@google.com
 jplemieux@google.com
 yukl@google.com
 tmfang@google.com
 chiujason@google.com
-rexhoffman@google.com
 yuwu@google.com
 congxiliu@google.com
 ramperi@google.com
