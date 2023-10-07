@@ -44,7 +44,7 @@ LOCAL_DONT_DELETE_JAR_META_INF := true
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     Robolectric_all-target \
-    truth-prebuilt
+    truth
 
 LOCAL_JAVA_LIBRARIES := \
     robolectric_android-all-stub
