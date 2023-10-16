@@ -46,7 +46,7 @@ java_test_host {
         "objenesis",
         "ow2-asm-tree",
         "junit",
-        "truth-prebuilt",
+        "truth",
         "ow2-asm",
         "jsr305",
     ],
