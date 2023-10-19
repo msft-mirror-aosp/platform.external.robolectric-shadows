@@ -163,7 +163,7 @@ java_host_for_device {
       "//external/android_onboarding/src/com/android/onboarding/nodes/testing:__pkg__",
       "//external/android_onboarding/src/com/android/onboarding/testing:__pkg__",
       "//frameworks/opt/net/wifi/libs/WifiTrackerLib/tests:__pkg__",
-      "//prebuilts/sdk/current/androidx:__pkg__",
+      "//prebuilts/sdk/current/androidx:__subpackages__",
       "//prebuilts/sdk/current/aaos-libs:__pkg__",
       "//packages/apps/TV/tests/common:__pkg__",
       //robolectric tests
