@@ -2,6 +2,7 @@ package org.robolectric.shadows;
 
 import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.TIRAMISU;
+import static android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE;
 import static com.google.common.truth.Truth.assertThat;
 import static org.robolectric.RuntimeEnvironment.application;
 import static org.robolectric.Shadows.shadowOf;
@@ -67,10 +68,17 @@ public class ShadowStorageManagerTest {
   }
 
   @Test
-  @Config(minSdk = N)
+  @Config(minSdk = N, maxSdk = UPSIDE_DOWN_CAKE)
   public void isUserKeyUnlocked() {
     shadowOf(application.getSystemService(UserManager.class)).setUserUnlocked(true);
-    assertThat(StorageManager.isUserKeyUnlocked(0)).isTrue();
+    // Use reflection, as this method is planned to be removed from StorageManager in V.
+    assertThat(
+            (boolean)
+                ReflectionHelpers.callStaticMethod(
+                    StorageManager.class,
+                    "isUserKeyUnlocked",
+                    ReflectionHelpers.ClassParameter.from(int.class, 0)))
+        .isTrue();
   }
 
   private StorageVolume buildAndGetStorageVolume(File file, String description) {
