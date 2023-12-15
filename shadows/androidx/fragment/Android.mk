@@ -14,7 +14,7 @@ LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/src/test/resources/res
 # This exists to coerce make into generating and compiling R.java.
 LOCAL_STATIC_JAVA_LIBRARIES := androidx.fragment_fragment
 
-LOCAL_MIN_SDK_VERSION := 16
+LOCAL_MIN_SDK_VERSION := 19
 
 LOCAL_SDK_VERSION := current
 
