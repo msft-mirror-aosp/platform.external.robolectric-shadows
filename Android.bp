@@ -46,7 +46,6 @@ license {
 // Empty library. Should be removed
 java_library {
     name: "robolectric_android-all-stub",
-    visibility: ["//visibility:public"],
 }
 
 //#############################################
