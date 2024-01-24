@@ -46,71 +46,6 @@ license {
 // Empty library. Should be removed
 java_library {
     name: "robolectric_android-all-stub",
-    visibility: ["//visibility:public"],
-}
-
-// build.prop file created by module type defined in soong/robolectric.go
-robolectric_build_props {
-    name: "robolectric_build_props",
-}
-
-java_genrule_host {
-    name: "robolectric_framework_res",
-    tools: ["zip2zip"],
-    srcs: [":framework-res"],
-    out: ["robolectric_framework_res.jar"],
-    cmd: "$(location zip2zip) " +
-        "-i $(location :framework-res) " +
-        "-o $(location robolectric_framework_res.jar) " +
-        "-x classes.dex " +
-        "-x META-INF/**/* " +
-        "-0 resources.arsc",
-}
-
-java_device_for_host {
-    name: "robolectric_android-all-device-deps",
-    libs: [
-        "conscrypt-for-host",
-        "core-icu4j-for-host",
-        "core-libart-for-host",
-        "ext",
-        "framework-all",
-        "icu4j-icudata-jarjar",
-        "icu4j-icutzdata-jarjar",
-        "ims-common",
-        "libphonenumber-platform",
-        "okhttp-for-host",
-        "services",
-        "services.accessibility",
-        "telephony-common",
-        "android.car",
-        "android.car.builtin",
-    ],
-}
-
-java_library_host {
-    name: "robolectric-host-android_all",
-    static_libs: [
-        "robolectric_android-all-device-deps",
-        "robolectric_tzdata",
-        "robolectric_framework_res",
-    ],
-    dist: {
-        targets: [
-            "sdk",
-            "win_sdk",
-        ],
-        dest: "android-all-robolectric.jar",
-    },
-
-    java_resources: [
-        // Copy the build.prop
-        ":robolectric_build_props",
-    ],
-    visibility: [
-        ":__subpackages__",
-        "//prebuilts/misc/common/robolectric",
-    ],
 }
 
 //#############################################
@@ -158,8 +93,6 @@ java_host_for_device {
     libs: ["Robolectric_all"],
     visibility: [
       ":__subpackages__",
-      //robolectric tests
-      "//vendor:__subpackages__",
       //settings test
       "//packages/apps/TvSettings/Settings/tests/robotests:__pkg__",
       "//frameworks/base/packages/SettingsLib/tests/robotests:__pkg__",
