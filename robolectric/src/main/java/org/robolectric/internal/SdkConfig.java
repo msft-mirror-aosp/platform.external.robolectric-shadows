@@ -30,10 +30,12 @@ public class SdkConfig implements Comparable<SdkConfig> {
               addSdk(Build.VERSION_CODES.O_MR1, "8.1.0", "4611349", "REL");
               addSdk(Build.VERSION_CODES.P, "9", "4913185-2", "REL");
               addSdk(Build.VERSION_CODES.Q, "10", "5803371", "REL");
+              addSdk(Build.VERSION_CODES.R, "11", "6757853", "REL");
+              addSdk(Build.VERSION_CODES.S, "12", "7732740", "REL");
+              addSdk(Build.VERSION_CODES.S_V2, "12.1", "8229987", "REL");
+              addSdk(Build.VERSION_CODES.TIRAMISU, "13", "9030017", "REL");
               // BEGIN-INTERNAL
-              // TODO: Update jar with final R release.
-              addSdk(Build.VERSION_CODES.R, "R-beta2", "6625208", "REL");
-              addSdk(Build.VERSION_CODES.S, "S-beta3", "7541949", "REL");
+              // TODO: Update jar with final U release.
               addSdk(Build.VERSION_CODES.CUR_DEVELOPMENT, "current", "r0", "ZZZ");
               // END-INTERNAL
             }
